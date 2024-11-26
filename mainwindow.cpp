@@ -6,14 +6,20 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , cols(8)                      // Inicializar variables privadas del .h
+    , cols(8)
     , rows(7)
     , currentPlayer(1)
+    , highlightedColumn(-1) // Inicialmente ninguna columna está resaltada
 {
     ui->setupUi(this);
-    tablero.resize(rows, QVector<int>(cols, 0));   // Inicializo tablero de juego a 0
+    tablero.resize(rows, QVector<int>(cols, 0)); // Inicializo tablero de juego a 0
     setMinimumSize(cols * 40, rows * 40);
+
+    // Activar seguimiento del ratón
+    setMouseTracking(true);
+    ui->centralwidget->setMouseTracking(true);
 }
+
 
 MainWindow::~MainWindow()
 {
@@ -26,15 +32,15 @@ void MainWindow::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
 
-    // Variables para ajustar anchura y altura del inicio de las celdas
     QRect geom = ui->centralwidget->geometry();
     int width = geom.width();
     int height = geom.height();
 
-    if((width / cols) < (height / rows))
+    if ((width / cols) < (height / rows))
     {
-        cellSize = width / rows;
-    } else
+        cellSize = width / cols;
+    }
+    else
     {
         cellSize = height / rows;
     }
@@ -44,22 +50,20 @@ void MainWindow::paintEvent(QPaintEvent *event)
 
     // Dibujar fondo
     painter.setBrush(Qt::lightGray);
-    //painter.drawRect(0, 0, cols * cellSize, rows * cellSize);
     painter.drawRect(x0, y0, cols * cellSize, rows * cellSize);
 
-    // Dibujar celdas
-    for(int r = 0; r < rows; r++)
+    // Dibujar celdas del tablero
+    for (int r = 0; r < rows; r++)
     {
-        for(int c = 0; c < cols; c++)
+        for (int c = 0; c < cols; c++)
         {
-            // Dibujar círculo para cada celda
-            //QRect circleRect(c * cellSize + 5, r * cellSize + 5, cellSize - 10, cellSize - 10);
             QRect circleRect(x0 + (c * cellSize + 5), y0 + (r * cellSize + 5), cellSize - 10, cellSize - 10);
-            if(tablero[r][c] == 0)
+
+            if (tablero[r][c] == 0)
             {
                 painter.setBrush(Qt::white);
             }
-            else if(tablero[r][c] == 1)
+            else if (tablero[r][c] == 1)
             {
                 painter.setBrush(Qt::red);
             }
@@ -67,10 +71,41 @@ void MainWindow::paintEvent(QPaintEvent *event)
             {
                 painter.setBrush(Qt::yellow);
             }
+
             painter.drawEllipse(circleRect);
         }
     }
+
+    // Dibujar círculo para la ficha "fantasma" en la columna resaltada
+    if (highlightedColumn != -1)
+    {
+        // Buscar la fila más baja disponible en la columna resaltada
+        int dropRow = -1;
+        for (int r = rows - 1; r >= 0; r--)
+        {
+            if (tablero[r][highlightedColumn] == 0)
+            {
+                dropRow = r;
+                break;
+            }
+        }
+
+        if (dropRow != -1)
+        {
+            // Dibujar el círculo "fantasma" donde iría la ficha
+            QRect ghostCircleRect(
+                x0 + (highlightedColumn * cellSize + 5),
+                y0 + (dropRow * cellSize + 5),
+                cellSize - 10,
+                cellSize - 10);
+
+            painter.setBrush(QColor(200, 200, 255, 128)); // Color semitransparente
+            painter.drawEllipse(ghostCircleRect);
+        }
+    }
 }
+
+
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
@@ -162,4 +197,33 @@ bool MainWindow::checkWin(int row, int col)
             return true;
     }
     return false;
+}
+
+void MainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    // Actualizar la columna resaltada según la posición del ratón
+    int mouseX = event->pos().x();
+    updateHighlightedColumn(mouseX);
+}
+
+void MainWindow::updateHighlightedColumn(int mouseX)
+{
+    QRect geom = ui->centralwidget->geometry();
+    int width = geom.width();
+    int x0 = (width - (cols * cellSize)) / 2;
+
+    int column = (mouseX - x0) / cellSize;
+    if (column >= 0 && column < cols && column != highlightedColumn)
+    {
+        highlightedColumn = column;
+        update(); // Forzar redibujado
+    }
+    else if (column < 0 || column >= cols) // Si el ratón está fuera del área
+    {
+        if (highlightedColumn != -1)
+        {
+            highlightedColumn = -1; // Quitar el resaltado
+            update();
+        }
+    }
 }
