@@ -2,6 +2,8 @@
 #include "./ui_mainwindow.h"
 
 #include <QMessageBox>
+#include <cstdlib>      // Para el std::rand()
+#include <ctime>        // Para el std::time()
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -10,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     , rows(7)
     , currentPlayer(1)
     , highlightedColumn(-1) // Inicialmente ninguna columna está resaltada
+    , playAgainstCPU(true) // Cambia a true para jugar contra la CPU
 {
     ui->setupUi(this);
     tablero.resize(rows, QVector<int>(cols, 0)); // Inicializo tablero de juego a 0
@@ -18,6 +21,15 @@ MainWindow::MainWindow(QWidget *parent)
     // Activar seguimiento del ratón
     setMouseTracking(true);
     ui->centralwidget->setMouseTracking(true);
+
+    // Semilla para movimientos aleatorios de la CPU
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+
+    // Configuración del temporizador para la CPU
+    // Se utiliza esta opción debido a que un msleep() o sleep() detiene el bucle de eventos y se congela la interfaz
+    cpuTimer = new QTimer(this);
+    cpuTimer->setSingleShot(true);    // Solo disparar una vez por acción
+    connect(cpuTimer, &QTimer::timeout, this, &MainWindow::cpuMove);
 }
 
 
@@ -132,8 +144,15 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
                     return;
                 }
 
-                // Cambiar de jugador
+                // Cambiar de jugador - CPU
                 currentPlayer = (currentPlayer == 1) ? 2 : 1;
+
+                // Si está activado el modo CPU y es el turno de la máquina
+                if (playAgainstCPU && currentPlayer == 2)
+                {
+                    // cpuTimer está conectado con la función cpuMove, la cual realiza el turno de la CPU
+                    cpuTimer->start(500);  // Se ejecuta con un retraso de 500 ms sin congelar la interfaz
+                }
             }
             else
             {
@@ -226,4 +245,26 @@ void MainWindow::updateHighlightedColumn(int mouseX)
             update();
         }
     }
+}
+
+void MainWindow::cpuMove()
+{
+    int column, row;
+
+    do
+    {
+        column = std::rand() % cols; // Seleccionar una columna aleatoria
+    } while (!dropDisc(column, row)); // Intentar hasta que se encuentre una columna válida
+
+    update();
+
+    // Verificar si el movimiento de la máquina gana el juego
+    if (checkWin(row, column))
+    {
+        QMessageBox::information(this, "Victoria", "¡La CPU ha ganado!");
+        return;
+    }
+
+    // Cambiar de jugador de nuevo al jugador humano
+    currentPlayer = 1;
 }
