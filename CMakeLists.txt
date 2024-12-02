@@ -19,11 +19,21 @@ set(PROJECT_SOURCES
         mainwindow.ui
 )
 
+# Ruta para encontrar el archivo.lib
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib)
+# Ruta relativa para encontrar los archivos de cabecera
+link_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib)
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(TrabajoIHM
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        pantallainicio.h pantallainicio.cpp pantallainicio.ui
     )
+
+# Enlace de la biblioteca
+target_link_libraries(TrabajoIHM PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Connect4Lib)
+
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET TrabajoIHM APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)

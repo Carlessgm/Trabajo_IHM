@@ -121,6 +121,11 @@ void MainWindow::paintEvent(QPaintEvent *event)
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
+    if(playAgainstCPU && currentPlayer == 2)
+    {
+        return; // Ignorar clicks mientras es el turno de la CPU
+    }
+
     if(event->button() == Qt::LeftButton)                   // Si se pulsa click izquierdo
     {
         int x = event->pos().x();

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PantallaInicio</class>
+ <widget class="QWidget" name="PantallaInicio">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Inicio de Sesión</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="labelTitulo">
+     <property name="text">
+      <string>Iniciar Sesión</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="lineUsuario">
+     <property name="placeholderText">
+      <string>Usuario</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="lineContrasena">
+     <property name="echoMode">
+      <enum>QLineEdit::EchoMode::Password</enum>
+     </property>
+     <property name="placeholderText">
+      <string>Contraseña</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="botonIniciarSesion">
+     <property name="text">
+      <string>Iniciar Sesión</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="botonRegistrar">
+     <property name="text">
+      <string>Registrarse</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
