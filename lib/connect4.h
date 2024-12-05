@@ -15,8 +15,11 @@ public:
                            const QString& password, const QDate& birthdate, int points = 0);
     Round* registerRound(const QDateTime& timestamp, Player* winner, Player* loser);
     Player* loginPlayer(const QString& nickName, const QString& password);
+    Player* getPlayer(const QString& nickname);
+    bool existsNickName(const QString& nickname);
     QList<Player*> getRanking();
     QList<Round*> getRoundsForPlayer(Player* player);
+
     void clearAllData();
 
 private:
