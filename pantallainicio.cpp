@@ -1,6 +1,7 @@
 #include "pantallainicio.h"
 #include "ui_pantallainicio.h"
 #include "mainwindow.h"
+#include "pantallaregistro.h"
 #include "connect4.h"
 #include <QMessageBox>
 
@@ -24,7 +25,10 @@ PantallaInicio::~PantallaInicio()
 
 void PantallaInicio::onbotonRegistrar_clicked()
 {
-    QMessageBox::information(this, "Registro", "Función de registro en desarrollo.");
+    //QMessageBox::information(this, "Registro", "Función de registro en desarrollo.");
+    // Abrimos la ventana de registro
+    PantallaRegistro *pr = new PantallaRegistro(this);
+    pr->show();
 }
 
 void PantallaInicio::onbotonIniciarSesion_clicked()
