@@ -2,6 +2,7 @@
 #include "ui_PantallaRegistro.h"
 #include <QFileDialog>
 #include <QDate>
+#include "connect4.h"
 
 PantallaRegistro::PantallaRegistro(QWidget *parent) :
     QDialog(parent),
@@ -28,16 +29,44 @@ void PantallaRegistro::on_botonSeleccionarAvatar_clicked()
 
 void PantallaRegistro::okButtonClicked()
 {
-    // Validar el formulario antes de continuar
     if (validarFormulario()) {
-        // Aquí puedes realizar el registro del usuario, guardarlo en base de datos, etc.
-        accept();  // Cierra la ventana y acepta el registro
-        QMessageBox::information(this, "Registro Exitoso", "¡Te has registrado correctamente!");
+        QString nickname = ui->lineEditUsuario->text();
+        QString email = ui->lineEditCorreo->text();
+        QString password = ui->lineEditContrasena->text();
+        QDate birthdate = ui->dateEditNacimiento->date();
+        QString avatarPath = ui->lineEditAvatar->text();
+
+        Connect4& connect4 = Connect4::getInstance();
+
+        // Verificar si el nombre de usuario ya existe
+        if (connect4.existsNickName(nickname)) {
+            mostrarError("El nombre de usuario ya está en uso. Por favor, elige otro.");
+            return;
+        }
+        // Verificar si el correo ya está registrado
+        if (connect4.existsEmail(email)) {
+            mostrarError("El correo electrónico ya está registrado. Por favor, utiliza otro.");
+            return;
+        }
+        // Registrar el jugador
+        Player* newPlayer = connect4.registerPlayer(nickname, email, password, birthdate);
+
+        if (newPlayer) {
+            if (!avatarPath.isEmpty()) {
+                // Guardar avatar si se necesita lógica adicional
+                qDebug() << "Avatar seleccionado: " << avatarPath;
+            }
+
+            accept();  // Cierra la ventana
+            QMessageBox::information(this, "Registro Exitoso", "¡Te has registrado correctamente!");
+        } else {
+            mostrarError("Ocurrió un error al registrar al usuario. Inténtalo de nuevo.");
+        }
     } else {
         mostrarError("Por favor, asegúrate de que todos los campos sean válidos.");
-        return;
     }
 }
+
 
 bool PantallaRegistro::validarFormulario()
 {
