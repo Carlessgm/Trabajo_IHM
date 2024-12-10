@@ -1,4 +1,4 @@
-#include "pantallainicio.h"
+#include "mainwindow.h"
 #include "connect4.h"
 
 #include <QApplication>
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
         qDebug() << "Jugador registrado:" << player->getNickName();
     }
 
-    PantallaInicio p;
-    p.show();
+    MainWindow w;
+    w.show();
     return a.exec();
 }

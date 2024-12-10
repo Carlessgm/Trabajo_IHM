@@ -1,6 +1,6 @@
 #include "pantallainicio.h"
 #include "ui_pantallainicio.h"
-#include "mainwindow.h"
+#include "pantallajuego.h"
 #include "pantallaregistro.h"
 #include "connect4.h"
 #include <QMessageBox>
@@ -49,11 +49,11 @@ void PantallaInicio::onbotonIniciarSesion_clicked()
         QMessageBox::information(this, "Inicio de sesión exitoso", "Bienvenido, " + player->getNickName() + "!");
         qDebug() << "Jugador logueado: " << player->getNickName();
         delete player; // Si player fue retornado desde DAO, elimina para evitar fugas
-        // Cerramos la ventana de Inicio
-        this->close();
         // Abrimos la ventana de juego
-        MainWindow *w = new MainWindow(this);
+        /*PantallaJuego *w = new PantallaJuego(this);
         w->show();
+        // Cerramos la ventana de Inicio
+        this->close();*/
     } else {
         QMessageBox::warning(this, "Error", "Usuario o contraseña incorrectos.");
     }

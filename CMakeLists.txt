@@ -30,6 +30,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         pantallainicio.h pantallainicio.cpp pantallainicio.ui
         pantallaregistro.h pantallaregistro.cpp pantallaregistro.ui
+        pantallajuego.h pantallajuego.cpp pantallajuego.ui
 
     )
 

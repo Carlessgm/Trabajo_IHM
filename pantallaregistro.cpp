@@ -44,10 +44,10 @@ void PantallaRegistro::okButtonClicked()
             return;
         }
         // Verificar si el correo ya está registrado
-        if (connect4.existsEmail(email)) {
+        /*if (connect4.existsEmail(email)) {
             mostrarError("El correo electrónico ya está registrado. Por favor, utiliza otro.");
             return;
-        }
+        }*/
         // Registrar el jugador
         Player* newPlayer = connect4.registerPlayer(nickname, email, password, birthdate);
 

@@ -21,6 +21,7 @@ private slots:
 
 private:
     Ui::PantallaInicio *ui;
+    QWidget *currentWidget; // Puntero al widget actual
 };
 
 #endif // PANTALLAINICIO_H
