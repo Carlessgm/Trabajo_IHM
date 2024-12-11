@@ -1,0 +1,44 @@
+/* Estilo general de la ventana principal */
+QMainWindow {
+    background-color: #ffffff; /* Gris muy claro para el fondo */
+}
+#PantallaRegistro{
+    background-color: #ffffff; /* Gris muy claro para el fondo */
+}
+
+/* Estilo de los QLabel */
+QLabel {
+    color: #000000;
+    font-size: 18px;
+
+}
+
+
+QLineEdit{
+    border-color: #00ff00;
+    border-width: 20px;
+    background-color: #000000;
+}
+/* Estilo de los QPushButton */
+QPushButton {
+    background-color: #444444;
+    border: 2px solid #646464;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 18px;
+    font-family: Arial, sans-serif;
+    color: #999999;
+
+}
+
+QPushButton:hover {
+    background-color: #6666ff;
+    color: #000000;
+    font-size: 20px;
+
+}
+
+QMessageBox{
+    background-color: #d4d4d4;
+}
+

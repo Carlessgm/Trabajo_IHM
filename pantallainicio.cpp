@@ -16,6 +16,7 @@ PantallaInicio::PantallaInicio(QWidget *parent) :
 
     // Conectar el botón de registro (puedes dejarlo vacío por ahora)
     connect(ui->botonRegistrar, &QPushButton::clicked, this, &PantallaInicio::onbotonRegistrar_clicked);
+    ui->lineContrasena->setEchoMode(QLineEdit::Password);
 }
 
 PantallaInicio::~PantallaInicio()
@@ -28,6 +29,7 @@ void PantallaInicio::onbotonRegistrar_clicked()
     //QMessageBox::information(this, "Registro", "Función de registro en desarrollo.");
     // Abrimos la ventana de registro
     PantallaRegistro *pr = new PantallaRegistro(this);
+
     pr->show();
 }
 

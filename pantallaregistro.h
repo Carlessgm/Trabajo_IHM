@@ -26,9 +26,9 @@ private:
     Ui::PantallaRegistro *ui;
 
     bool validarFormulario();  // Validar los campos del formulario
-    bool validarEmail(const QString &email, QString &tipo_error);  // Validar correo electrónico
+    bool validarEmail(QString &tipo_error);  // Validar correo electrónico
     bool validarContrasenas(QString &tipo_error);  // Validar que las contraseñas coincidan
-    bool validarNombreUsuario(const QString &nombreUsuario, QString &tipo_error); // Validar nombre de usuario
+    void validarNombreUsuario(); // Validar nombre de usuario
     bool validarEdad();  // Validar la edad
     void mostrarError(const QString &mensaje);  // Mostrar mensajes de error
 };

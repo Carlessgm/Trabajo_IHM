@@ -36,6 +36,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         persona/persona.cpp
         persona/personatablemodel.cpp
         persona/personatablemodel.h
+        resources.qrc
     )
 
 # Enlace de las bibliotecas

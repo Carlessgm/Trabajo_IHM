@@ -3,6 +3,7 @@
 #include "pantallainicio.h"
 #include "pantallajuego.h"
 #include "pantallaranking.h"
+#include <qdir.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -26,9 +27,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(gameAction, &QAction::triggered, this, &MainWindow::showPantallaJuego);
     connect(rankingAction, &QAction::triggered, this, &MainWindow::showPantallaRanking);
 
+
     // Mostrar inicialmente el TimeWidget
     showPantallaInicio();
 }
+
 
 MainWindow::~MainWindow()
 {
@@ -41,6 +44,7 @@ void MainWindow::showPantallaInicio() {
     }
     currentWidget = new PantallaInicio(this);
     setCentralWidget(currentWidget);
+
 }
 
 void MainWindow::showPantallaJuego() {

@@ -9,9 +9,13 @@ PantallaRegistro::PantallaRegistro(QWidget *parent) :
     ui(new Ui::PantallaRegistro)
 {
     ui->setupUi(this);
-
+    QString error;
+    bool prueba;
+    ui->lineEditUsuario->setProperty("Valido", true);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &PantallaRegistro::reject);
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &PantallaRegistro::okButtonClicked);
+
+    connect(ui->lineEditUsuario, &QLineEdit::editingFinished, this, &PantallaRegistro::validarNombreUsuario);
 }
 
 PantallaRegistro::~PantallaRegistro()
@@ -78,7 +82,7 @@ bool PantallaRegistro::validarFormulario()
     QString error_avatar = "";
 
     // Validar el nombre de usuario
-    if (!validarNombreUsuario(ui->lineEditUsuario->text(), error_usuario)) {
+    if (false) {
         ui->lineEditUsuario->setText("");
         errores += 1;
     }
@@ -91,7 +95,7 @@ bool PantallaRegistro::validarFormulario()
     }
 
     // Validar el correo electrónico
-    if (!validarEmail(ui->lineEditCorreo->text(),error_mail)) {
+    if (!validarEmail(error_mail)) {
         ui->lineEditCorreo->clear();
         ui->lineEditConfirmarCorreo->clear();
         errores += 1;
@@ -122,7 +126,7 @@ bool PantallaRegistro::validarFormulario()
 
 }
 
-bool PantallaRegistro::validarEmail(const QString &email, QString &tipo_error)
+bool PantallaRegistro::validarEmail(QString &tipo_error)
 {
     QString correo = ui->lineEditCorreo->text();
     QString confirmarCorreo = ui->lineEditConfirmarCorreo->text();
@@ -134,7 +138,7 @@ bool PantallaRegistro::validarEmail(const QString &email, QString &tipo_error)
     }
 
     static QRegularExpression emailRegex("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
-    if(!emailRegex.match(email).hasMatch())
+    if(!emailRegex.match(correo).hasMatch())
     {
         tipo_error = "Introduzca un correo electrónico válido \n";
         return false;
@@ -166,22 +170,24 @@ bool PantallaRegistro::validarContrasenas(QString &tipo_error)
     return true;
 }
 
-bool PantallaRegistro::validarNombreUsuario(const QString &nombreUsuario, QString &tipo_error)
+void PantallaRegistro::validarNombreUsuario()
 {
     // Validar que el nombre de usuario tenga entre 6 y 15 caracteres y que no contenga espacios
+    QString nombreUsuario = ui->lineEditUsuario->text();
+
     static QRegularExpression nombreUsuarioRegex("^[a-zA-Z0-9_-]{6,15}$");
     if (!nombreUsuarioRegex.match(nombreUsuario).hasMatch()) {
-        tipo_error = "El nombre de usuario debe tener entre 6 y 15 caracteres, y no debe contener espacios. \n";
-        return false;
+        //tipo_error = "El nombre de usuario debe tener entre 6 y 15 caracteres, y no debe contener espacios. \n";
+        qDebug() << "He estado aqui";
+        ui->lineEditUsuario->setStyleSheet("QLineEdit#lineEditUsuario{ border-color: #ff0000; background-color: #ff0000};");
+        qDebug() << ui->lineEditUsuario->property("Valido");
     }
 
     // Verificar que el nombre de usuario no esté en uso (esto se simula aquí, pero debería ser una consulta a la base de datos)
     if (nombreUsuario == "pgarcia") {  // Simulación de nombre de usuario ya en uso
-       tipo_error = "Este nombre de usuario ya está en uso. Elige otro. \n";
-        return false;
+        //ipo_error = "Este nombre de usuario ya está en uso. Elige otro. \n";
+        ui->lineEditUsuario->setStyleSheet("QLineEdit#lineEditUsuario{ border-color: #ff0000; background-color: #ff0000};");
     }
-
-    return true;
 }
 
 bool PantallaRegistro::validarEdad()

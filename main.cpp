@@ -20,6 +20,15 @@ int main(int argc, char *argv[])
     }
 
     MainWindow w;
+    QFile file(":/estilos/estilos.qss"); // Asegúrate de que el archivo esté en el recurso
+    if (file.open(QFile::ReadOnly)) {
+        QString styleSheet = QLatin1String(file.readAll());
+        w.setStyleSheet(styleSheet);
+        qDebug() << "StyleSheet set";
+        file.close();
+    }else{
+        qDebug() << "el fichero no se ha podido abrir";
+    }
     w.show();
     return a.exec();
 }
