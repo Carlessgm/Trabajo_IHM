@@ -25,6 +25,7 @@ public:
 private slots:
     void showPantallaInicio();
     void showPantallaJuego();
+    void showPantallaRanking();
 
 private:
     Ui::MainWindow *ui;

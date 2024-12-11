@@ -31,10 +31,15 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         pantallainicio.h pantallainicio.cpp pantallainicio.ui
         pantallaregistro.h pantallaregistro.cpp pantallaregistro.ui
         pantallajuego.h pantallajuego.cpp pantallajuego.ui
-
+        pantallaranking.h pantallaranking.cpp pantallaranking.ui
+        persona/persona.h
+        persona/persona.cpp
+        persona/personatablemodel.cpp
+        persona/personatablemodel.h
     )
 
-# Enlace de la biblioteca
+# Enlace de las bibliotecas
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/persona)
 target_link_libraries(Trabajo_IHM PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Connect4Lib)
 
 # Define target properties for Android with Qt 6 as:
