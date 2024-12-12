@@ -4,6 +4,8 @@
 #include "pantallaregistro.h"
 #include "connect4.h"
 #include <QMessageBox>
+#include <QPixmap>
+
 
 PantallaInicio::PantallaInicio(QWidget *parent) :
     QWidget(parent),
@@ -17,7 +19,17 @@ PantallaInicio::PantallaInicio(QWidget *parent) :
     // Conectar el botón de registro (puedes dejarlo vacío por ahora)
     connect(ui->botonRegistrar, &QPushButton::clicked, this, &PantallaInicio::onbotonRegistrar_clicked);
     ui->lineContrasena->setEchoMode(QLineEdit::Password);
+
+    // Cargar una imagen en el QLabel
+   QPixmap imagen(":/imagenes/conecta4imagen.jpg"); // Asegúrate de que la ruta sea correcta
+    if (!imagen.isNull()) {
+        ui->labelTitulo->setPixmap(imagen);
+        ui->labelTitulo->setScaledContents(true); // Ajustar la imagen al tamaño del QLabel
+    } else {
+        qDebug() << "Error al cargar la imagen.";
+    }
 }
+
 
 PantallaInicio::~PantallaInicio()
 {
