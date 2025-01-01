@@ -15,7 +15,7 @@ int Persona::getPuntos() const {
     return puntos;
 }
 
-// Devuelve el avatar del jugador en formato QPixmap
+// Devuelve el avatar del jugador en formato QImage
 QImage Persona::getAvatar() const {
     return avatar;
 }

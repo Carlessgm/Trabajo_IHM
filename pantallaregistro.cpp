@@ -27,7 +27,11 @@ void PantallaRegistro::on_botonSeleccionarAvatar_clicked()
 {
     QString filePath = QFileDialog::getOpenFileName(this, tr("Seleccionar Avatar"), "", tr("Imágenes (*.png *.jpg *.jpeg *.bmp)"));
     if (!filePath.isEmpty()) {
-        ui->lineEditAvatar->setText(filePath);
+        if (QFile::exists(filePath)) {
+            ui->lineEditAvatar->setText(filePath);  // Mostrar ruta en el QLineEdit
+        } else {
+            mostrarError("El archivo seleccionado no existe. Por favor, selecciona una ruta válida.");
+        }
     }
 }
 
@@ -52,8 +56,17 @@ void PantallaRegistro::okButtonClicked()
             mostrarError("El correo electrónico ya está registrado. Por favor, utiliza otro.");
             return;
         }*/
+        // Cargamos la imagen desde la ruta que se indica
+        QImage avatarImage;
+        if (!avatarPath.isEmpty() && avatarImage.load(avatarPath)) {
+            qDebug() << "Avatar cargado correctamente desde la ruta: " << avatarPath;
+        } else {
+            avatarImage = QImage();  // Crear una imagen vacía en caso de error.
+            qDebug() << "No se pudo cargar la imagen desde la ruta: " << avatarPath;
+        }
+
         // Registrar el jugador
-        Player* newPlayer = connect4.registerPlayer(nickname, email, password, birthdate);
+        Player* newPlayer = connect4.registerPlayer(nickname, email, password, birthdate, 0, avatarImage);
 
         if (newPlayer) {
             if (!avatarPath.isEmpty()) {
@@ -110,6 +123,7 @@ bool PantallaRegistro::validarFormulario()
     // Validar si la ruta del avatar es válida (si se proporciona una)
     if (!ui->lineEditAvatar->text().isEmpty() && !QFile::exists(ui->lineEditAvatar->text())) {
         error_avatar = "La ruta del avatar no es válida.";
+        errores += 1;
         return false;
     }
 

@@ -1,5 +1,6 @@
 // personatablemodel.cpp
 #include "personatablemodel.h"
+#include <QPixmap>
 
 PersonaTableModel::PersonaTableModel(QObject *parent)
     : QAbstractTableModel(parent) {}
@@ -42,7 +43,14 @@ QVariant PersonaTableModel::data(const QModelIndex &index, int role) const {
         case 2: return persona->getPuntos();
         }
     } else if (role == Qt::DecorationRole && index.column() == 0) {
-        return persona->getAvatar(); // Avatar en formato QImage
+        // Escalar la imagen para que se ajuste a la celda
+        QImage avatar = persona->getAvatar();
+        if(!avatar.isNull())
+        {
+            QSize cellSize(40, 40);
+            QImage scaledAvatar = avatar.scaled(cellSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            return QPixmap::fromImage(scaledAvatar); // Devuelve el QPixmap escalado
+        }
     }
 
     return QVariant();

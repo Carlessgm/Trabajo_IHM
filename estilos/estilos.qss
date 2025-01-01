@@ -18,7 +18,7 @@ QLabel {
 QLineEdit{
     border-color: #00ff00;
     border-width: 20px;
-    background-color: #000000;
+    background-color: #ffffff;
 }
 /* Estilo de los QPushButton */
 QPushButton {

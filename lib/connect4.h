@@ -11,8 +11,11 @@ public:
     static Connect4& getInstance();
 
     // Métodos de negocio
+    Player* registerPlayer(const QString &nickName, const QString& email,
+                           const QString &password, const QDate& birthdate, int points);
     Player* registerPlayer(const QString& nickName, const QString& email,
-                           const QString& password, const QDate& birthdate, int points = 0);
+                           const QString& password, const QDate& birthdate, int points, const QImage& avatar);
+
     Round* registerRound(const QDateTime& timestamp, Player* winner, Player* loser);
     Player* loginPlayer(const QString& nickName, const QString& password);
     Player* getPlayer(const QString& nickname);

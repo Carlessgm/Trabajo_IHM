@@ -10,8 +10,9 @@ class Connect4; // Declaración adelantada
 class Player {
 private:
     // Constructor privado: solo accesible desde Connect4
+
     Player(const QString& nickName, const QString& email, const QString& password,
-           const QDate& birthdate, int points = 0);
+           const QDate& birthdate, int points = 0, const QImage& avatar = QImage());
 
     friend class  Connect4; // Permite a Connect4 acceder al constructor
     friend class  Connect4DAO;
@@ -28,6 +29,8 @@ public:
     void setAvatar(const QImage& avatar);
 
     QDate getBirthdate() const;
+    void setBirthdate(const QDate& birthdate);
+
     int getPoints() const;
     void addPoints(int points);
 

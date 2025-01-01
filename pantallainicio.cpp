@@ -21,7 +21,7 @@ PantallaInicio::PantallaInicio(QWidget *parent) :
     ui->lineContrasena->setEchoMode(QLineEdit::Password);
 
     // Cargar una imagen en el QLabel
-   QPixmap imagen(":/imagenes/conecta4imagen.jpg"); // Asegúrate de que la ruta sea correcta
+    QPixmap imagen(":/imagenes/conecta4imagen.jpg"); // Asegúrate de que la ruta sea correcta
     if (!imagen.isNull()) {
         ui->labelTitulo->setPixmap(imagen);
         ui->labelTitulo->setScaledContents(true); // Ajustar la imagen al tamaño del QLabel
