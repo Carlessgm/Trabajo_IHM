@@ -9,13 +9,24 @@ PantallaRegistro::PantallaRegistro(QWidget *parent) :
     ui(new Ui::PantallaRegistro)
 {
     ui->setupUi(this);
-    QString error;
     bool prueba;
-    ui->lineEditUsuario->setProperty("Valido", true);
+    line_edits[0]= ui->lineEditUsuario;
+    line_edits[1]= ui->lineEditCorreo;
+    line_edits[2]= ui->lineEditConfirmarCorreo;
+    line_edits[3]= ui->lineEditContrasena;
+    line_edits[4]= ui->lineEditConfirmarContrasena;
+    line_edits[5]= ui->lineEditAvatar;
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &PantallaRegistro::reject);
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &PantallaRegistro::okButtonClicked);
 
+
     connect(ui->lineEditUsuario, &QLineEdit::editingFinished, this, &PantallaRegistro::validarNombreUsuario);
+    connect(ui->lineEditContrasena, &QLineEdit::editingFinished, this, &PantallaRegistro::validarContrasenas);
+    connect(ui->lineEditConfirmarContrasena, &QLineEdit::editingFinished, this, &PantallaRegistro::validarContrasenas);
+    connect(ui->lineEditCorreo, &QLineEdit::editingFinished, this, &PantallaRegistro::validarEmail);
+    connect(ui->lineEditConfirmarCorreo, &QLineEdit::editingFinished, this, &PantallaRegistro::validarEmail);
+
+
 }
 
 PantallaRegistro::~PantallaRegistro()
@@ -79,109 +90,95 @@ void PantallaRegistro::okButtonClicked()
         } else {
             mostrarError("Ocurrió un error al registrar al usuario. Inténtalo de nuevo.");
         }
-    } else {
-        mostrarError("Por favor, asegúrate de que todos los campos sean válidos.");
     }
 }
 
 
 bool PantallaRegistro::validarFormulario()
 {
-    int errores = 0;
-    QString error_usuario = "";
-    QString error_contrasena = "";
-    QString error_mail = "";
-    QString error_fecha = "";
-    QString error_avatar = "";
 
-    // Validar el nombre de usuario
-    if (false) {
-        ui->lineEditUsuario->setText("");
-        errores += 1;
+    for(int i = 0; i <= 4; i++){
+        if(line_edits[i]->property("Valido") == false){
+            mostrarError("Corrija los errores (están marcados en rojo)");
+            return false;
+        }
+        if(line_edits[i]->text().length() == 0){
+            mostrarError("Rellene los espacios obligatorios");
+            return false;
+        }
     }
-
-    // Validar las contraseñas
-    if (!validarContrasenas(error_contrasena)) {
-        ui->lineEditContrasena->setText("");
-        ui->lineEditConfirmarContrasena->setText("");
-        errores += 1;
-    }
-
-    // Validar el correo electrónico
-    if (!validarEmail(error_mail)) {
-        ui->lineEditCorreo->clear();
-        ui->lineEditConfirmarCorreo->clear();
-        errores += 1;
-    }
-
     // Validar la edad (mayor de 12 años)
-    if (!validarEdad()) {
-        error_fecha = "Debes ser mayor de 12 años para registrarte.";
-        errores += 1;
-    }
-
     // Validar si la ruta del avatar es válida (si se proporciona una)
-    if (!ui->lineEditAvatar->text().isEmpty() && !QFile::exists(ui->lineEditAvatar->text())) {
-        error_avatar = "La ruta del avatar no es válida.";
-        errores += 1;
-        return false;
-    }
 
-    if(errores == 0)
-    {
+    if(!validarEdad()){
+        mostrarError("Se tiene que tener una edad mayor a 12 años");
+        return false;
+    }else{
         return true;
     }
-    else
-    {
-        QString mensaje_final = error_usuario + error_contrasena + error_mail + error_fecha + error_avatar;
-        mostrarError(mensaje_final);
-        return false;
-    }
-
 }
 
-bool PantallaRegistro::validarEmail(QString &tipo_error)
+void PantallaRegistro::validarEmail()
 {
     QString correo = ui->lineEditCorreo->text();
     QString confirmarCorreo = ui->lineEditConfirmarCorreo->text();
 
     // Validar que las contraseñas coinciden
-    if (correo != confirmarCorreo) {
-        tipo_error = "Los emails no coinciden. \n";
-        return false;
+    if (correo != confirmarCorreo && (confirmarCorreo != "")) {
+        ui->lineEditConfirmarCorreo->setProperty("Valido", false);
+        qDebug() << ui->lineEditConfirmarCorreo->property("Valido") << "emails distintas";
+
+    }else{
+
+        ui->lineEditConfirmarCorreo->setProperty("Valido", true);
+        qDebug() << ui->lineEditConfirmarCorreo->property("Valido") << "emails iguales";
     }
 
     static QRegularExpression emailRegex("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
     if(!emailRegex.match(correo).hasMatch())
     {
-        tipo_error = "Introduzca un correo electrónico válido \n";
-        return false;
-    }
+        ui->lineEditCorreo->setProperty("Valido", false);
+        qDebug() << ui->lineEditCorreo->property("Valido") << "email incorrecto";
+    }else{
 
-    return true;
+        ui->lineEditCorreo->setProperty("Valido", true);
+        qDebug() << ui->lineEditCorreo->property("Valido") << "email correcta";
+    }
+    setStyleSheet(valido_estilo);
+
 }
 
-bool PantallaRegistro::validarContrasenas(QString &tipo_error)
+void PantallaRegistro::validarContrasenas()
 {
     QString contrasena = ui->lineEditContrasena->text();
     QString confirmarContrasena = ui->lineEditConfirmarContrasena->text();
 
-    // Validar que las contraseñas coinciden
-    if (contrasena != confirmarContrasena) {
-        tipo_error = "Las contraseñas no coinciden. \n";
-        return false;
-    }
 
-    // Validar que la contraseña cumpla con los requisitos
     static QRegularExpression contrasenaRegex("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%&*()\\-+=]).{8,20}$");
     if (!contrasenaRegex.match(contrasena).hasMatch()) {
-        tipo_error = "La contraseña debe tener entre 8 y 20 caracteres, "
-                     "incluyendo al menos una letra mayúscula, una minúscula, "
-                     "un número y un carácter especial. \n";
-        return false;
+        ui->lineEditContrasena->setProperty("Valido", false);
+        qDebug() << ui->lineEditContrasena->property("Valido") << "contraseña mal";
+
+    }
+    else{
+        ui->lineEditContrasena->setProperty("Valido", true);
+        qDebug() << ui->lineEditContrasena->property("Valido") << "Contraseña correcta";
+
     }
 
-    return true;
+    // Validar que las contraseñas coinciden
+    if (contrasena != confirmarContrasena && (confirmarContrasena != "")) {
+        ui->lineEditConfirmarContrasena->setProperty("Valido", false);
+        qDebug() << ui->lineEditContrasena->property("Valido") << "Contraseñas distintas";
+    }
+    else{
+
+        ui->lineEditConfirmarContrasena->setProperty("Valido", true);
+        qDebug() << ui->lineEditContrasena->property("Valido") << "Contraseñas iguales";
+    }
+    setStyleSheet(valido_estilo);
+    // Validar que la contraseña cumpla con los requisitos
+
 }
 
 void PantallaRegistro::validarNombreUsuario()
@@ -191,17 +188,12 @@ void PantallaRegistro::validarNombreUsuario()
 
     static QRegularExpression nombreUsuarioRegex("^[a-zA-Z0-9_-]{6,15}$");
     if (!nombreUsuarioRegex.match(nombreUsuario).hasMatch()) {
-        //tipo_error = "El nombre de usuario debe tener entre 6 y 15 caracteres, y no debe contener espacios. \n";
-        qDebug() << "He estado aqui";
-        ui->lineEditUsuario->setStyleSheet("QLineEdit#lineEditUsuario{ border-color: #ff0000; background-color: #ff0000};");
-        qDebug() << ui->lineEditUsuario->property("Valido");
-    }
+        ui->lineEditUsuario->setProperty("Valido", false);
 
-    // Verificar que el nombre de usuario no esté en uso (esto se simula aquí, pero debería ser una consulta a la base de datos)
-    if (nombreUsuario == "pgarcia") {  // Simulación de nombre de usuario ya en uso
-        //ipo_error = "Este nombre de usuario ya está en uso. Elige otro. \n";
-        ui->lineEditUsuario->setStyleSheet("QLineEdit#lineEditUsuario{ border-color: #ff0000; background-color: #ff0000};");
+    }else{
+        ui->lineEditUsuario->setProperty("Valido", true);
     }
+    ui->lineEditUsuario->setStyleSheet(valido_estilo);
 }
 
 bool PantallaRegistro::validarEdad()

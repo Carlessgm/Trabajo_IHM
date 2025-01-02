@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QDate>
+#include <qlineedit.h>
 
 namespace Ui {
 class PantallaRegistro;
@@ -24,12 +25,14 @@ private slots:
 
 private:
     Ui::PantallaRegistro *ui;
-
+    QString valido_estilo = "QLineEdit[Valido = 'false']{ border-color: #ff0000; background-color: #ff0000};"
+                        "QLineEdit[Valido = 'true']{ border-color: #ffffff; background-color: #ffffff};";
     bool validarFormulario();  // Validar los campos del formulario
-    bool validarEmail(QString &tipo_error);  // Validar correo electrónico
-    bool validarContrasenas(QString &tipo_error);  // Validar que las contraseñas coincidan
+    void validarEmail();  // Validar correo electrónico
+    void validarContrasenas();  // Validar que las contraseñas coincidan
     void validarNombreUsuario(); // Validar nombre de usuario
     bool validarEdad();  // Validar la edad
+    QLineEdit *line_edits[8];
     void mostrarError(const QString &mensaje);  // Mostrar mensajes de error
 };
 
