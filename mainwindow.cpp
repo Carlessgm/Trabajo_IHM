@@ -3,6 +3,7 @@
 #include "pantallainicio.h"
 #include "pantallajuego.h"
 #include "pantallaranking.h"
+#include "pantallapartidas.h"
 #include <qdir.h>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -16,17 +17,19 @@ MainWindow::MainWindow(QWidget *parent)
     QAction *loginAction = new QAction("Mostrar Pantalla Inicio", this);
     QAction *gameAction = new QAction("Mostrar Pantalla Juego", this);
     QAction *rankingAction = new QAction("Mostrar Ranking", this);
+    QAction *partidasAction = new QAction("Partidas Jugadas", this);
 
     // Agregar acciones a la barra de herramientas
     ui->toolBar->addAction(loginAction);
     ui->toolBar->addAction(gameAction);
     ui->toolBar->addAction(rankingAction);
+    ui->toolBar->addAction(partidasAction);
 
     // Conectar acciones con slots
     connect(loginAction, &QAction::triggered, this, &MainWindow::showPantallaInicio);
     connect(gameAction, &QAction::triggered, this, &MainWindow::showPantallaJuego);
     connect(rankingAction, &QAction::triggered, this, &MainWindow::showPantallaRanking);
-
+    connect(partidasAction, &QAction::triggered, this, &MainWindow::showPantallaPartidas);
 
     // Mostrar inicialmente el TimeWidget
     showPantallaInicio();
@@ -60,5 +63,13 @@ void MainWindow::showPantallaRanking() {
         delete currentWidget;
     }
     currentWidget = new PantallaRanking(this);
+    setCentralWidget(currentWidget);
+}
+
+void MainWindow::showPantallaPartidas() {
+    if (currentWidget) {
+        delete currentWidget;
+    }
+    currentWidget = new PantallaPartidas(this);
     setCentralWidget(currentWidget);
 }
