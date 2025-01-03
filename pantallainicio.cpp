@@ -61,12 +61,8 @@ void PantallaInicio::onbotonIniciarSesion_clicked()
     if (player) {
         QMessageBox::information(this, "Inicio de sesión exitoso", "Bienvenido, " + player->getNickName() + "!");
         qDebug() << "Jugador logueado: " << player->getNickName();
+        emit loginSuccessful();
         delete player; // Si player fue retornado desde DAO, elimina para evitar fugas
-        // Abrimos la ventana de juego
-        /*PantallaJuego *w = new PantallaJuego(this);
-        w->show();
-        // Cerramos la ventana de Inicio
-        this->close();*/
     } else {
         QMessageBox::warning(this, "Error", "Usuario o contraseña incorrectos.");
     }

@@ -19,6 +19,9 @@ private slots:
     void onbotonIniciarSesion_clicked();
     void onbotonRegistrar_clicked();
 
+signals:
+    void loginSuccessful();
+
 private:
     Ui::PantallaInicio *ui;
     QWidget *currentWidget; // Puntero al widget actual

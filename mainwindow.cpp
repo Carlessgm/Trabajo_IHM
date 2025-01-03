@@ -25,6 +25,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolBar->addAction(rankingAction);
     ui->toolBar->addAction(partidasAction);
 
+    // Deshabilitar botón de "Mostrar Pantalla Juego" inicialmente
+    gameAction->setEnabled(false);
+
     // Conectar acciones con slots
     connect(loginAction, &QAction::triggered, this, &MainWindow::showPantallaInicio);
     connect(gameAction, &QAction::triggered, this, &MainWindow::showPantallaJuego);
@@ -45,9 +48,15 @@ void MainWindow::showPantallaInicio() {
     if (currentWidget) {
         delete currentWidget;
     }
-    currentWidget = new PantallaInicio(this);
+    auto *pantallaInicio = new PantallaInicio(this);
+    currentWidget = pantallaInicio;
     setCentralWidget(currentWidget);
 
+    // Conectar señal de inicio de sesión exitoso para habilitar el botón y cambiar la pantalla
+    connect(pantallaInicio, &PantallaInicio::loginSuccessful, this, [this]() {
+        ui->toolBar->actions()[1]->setEnabled(true); // Habilitar "Mostrar Pantalla Juego"
+        showPantallaJuego();
+    });
 }
 
 void MainWindow::showPantallaJuego() {
