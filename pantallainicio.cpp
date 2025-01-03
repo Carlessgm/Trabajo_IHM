@@ -41,7 +41,6 @@ void PantallaInicio::onbotonRegistrar_clicked()
     //QMessageBox::information(this, "Registro", "Función de registro en desarrollo.");
     // Abrimos la ventana de registro
     PantallaRegistro *pr = new PantallaRegistro(this);
-
     pr->show();
 }
 

@@ -2,6 +2,7 @@
 #include "ui_PantallaRegistro.h"
 #include <QFileDialog>
 #include <QDate>
+#include <QStyle>
 #include "connect4.h"
 
 PantallaRegistro::PantallaRegistro(QWidget *parent) :
@@ -25,7 +26,7 @@ PantallaRegistro::PantallaRegistro(QWidget *parent) :
     connect(ui->lineEditConfirmarContrasena, &QLineEdit::editingFinished, this, &PantallaRegistro::validarContrasenas);
     connect(ui->lineEditCorreo, &QLineEdit::editingFinished, this, &PantallaRegistro::validarEmail);
     connect(ui->lineEditConfirmarCorreo, &QLineEdit::editingFinished, this, &PantallaRegistro::validarEmail);
-
+    connect(ui->dateEditNacimiento, &QDateEdit::editingFinished, this, &PantallaRegistro::validarEdad);
 
 }
 
@@ -99,7 +100,7 @@ bool PantallaRegistro::validarFormulario()
 
     for(int i = 0; i <= 4; i++){
         if(line_edits[i]->property("Valido") == false){
-            mostrarError("Corrija los errores (están marcados en rojo)");
+            mostrarError("Corrija los errores (marcados en rojo)");
             return false;
         }
         if(line_edits[i]->text().length() == 0){
@@ -108,8 +109,6 @@ bool PantallaRegistro::validarFormulario()
         }
     }
     // Validar la edad (mayor de 12 años)
-    // Validar si la ruta del avatar es válida (si se proporciona una)
-
     if(!validarEdad()){
         mostrarError("Se tiene que tener una edad mayor a 12 años");
         return false;
@@ -199,12 +198,24 @@ void PantallaRegistro::validarNombreUsuario()
 bool PantallaRegistro::validarEdad()
 {
     QDate fechaNacimiento = ui->dateEditNacimiento->date();
-    int edad = fechaNacimiento.daysTo(QDate::currentDate()) / 365;
+    QDate fechaActual = QDate::currentDate();
 
-    if (edad <= 12) {
+    // Calcular la edad exacta
+    int edad = fechaActual.year() - fechaNacimiento.year();
+
+    if (fechaActual.month() < fechaNacimiento.month() ||
+        (fechaActual.month() == fechaNacimiento.month() && fechaActual.day() < fechaNacimiento.day())) {
+        edad--;
+    }
+
+    qDebug() << "Edad calculada: " << edad;
+
+    if (edad < 12) {
+        ui->dateEditNacimiento->setStyleSheet("background-color: red;"); // Indicar error visualmente
         return false;
     }
 
+    ui->dateEditNacimiento->setStyleSheet(""); // Restablecer estilo si es válido
     return true;
 }
 

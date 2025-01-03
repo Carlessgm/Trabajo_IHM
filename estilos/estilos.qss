@@ -1,7 +1,6 @@
 /* Estilo general de la ventana principal */
 QMainWindow {
     background-color: #2f7cc0; /* Azul de la iamgen para el fondo */
-    }
 }
 #PantallaRegistro{
     background-color: #ffffff; /* Gris muy claro para el fondo */
@@ -11,7 +10,7 @@ QMainWindow {
 QLabel {
     color: #000000;
     font-size: 18px;
-
+    font-weight: bold;
 }
 
 
