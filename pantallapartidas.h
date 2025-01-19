@@ -2,6 +2,7 @@
 #define PANTALLAPARTIDAS_H
 
 #include <QWidget>
+#include "partidatablemodel.h" // Modelo para manejar las partidas
 
 namespace Ui {
 class PantallaPartidas;
@@ -15,15 +16,11 @@ public:
     explicit PantallaPartidas(QWidget *parent = nullptr);
     ~PantallaPartidas();
 
-private slots:
-    void mostrarPartidas(int index);
-
 private:
     Ui::PantallaPartidas *ui;
+    PartidaTableModel *tableModel; // Modelo para mostrar la tabla de partidas
 
-    void cargarPartidasRealizadas();
-    void cargarPartidasGanadas();
-    void cargarPartidasPerdidas();
+    void cargarPartidas(); // Método para cargar las partidas
 };
 
 #endif // PANTALLAPARTIDAS_H

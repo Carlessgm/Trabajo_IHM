@@ -38,6 +38,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         persona/personatablemodel.h
         resources.qrc
         pantallapartidas.h pantallapartidas.cpp pantallapartidas.ui
+        partidatablemodel.h partidatablemodel.cpp
     )
 
 # Enlace de las bibliotecas
