@@ -2,6 +2,7 @@
 #define PANTALLAINICIO_H
 
 #include <QWidget>
+#include <qpushbutton.h>
 
 namespace Ui {
 class PantallaInicio;

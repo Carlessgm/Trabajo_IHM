@@ -2,6 +2,7 @@
 #include "ui_pantallainicio.h"
 #include "pantallajuego.h"
 #include "pantallaregistro.h"
+#include "mainwindow.h"
 #include "connect4.h"
 #include <QMessageBox>
 #include <QPixmap>

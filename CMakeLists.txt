@@ -39,6 +39,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         resources.qrc
         pantallapartidas.h pantallapartidas.cpp pantallapartidas.ui
         partidatablemodel.h partidatablemodel.cpp
+        dlgsegundojugador.h dlgsegundojugador.cpp
     )
 
 # Enlace de las bibliotecas

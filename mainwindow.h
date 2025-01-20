@@ -7,6 +7,7 @@
 #include <QMouseEvent>
 #include <QColorDialog>
 #include <QTimer>
+#include "connect4.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -27,9 +28,11 @@ private slots:
     void showPantallaJuego();
     void showPantallaRanking();
     void showPantallaPartidas();
+    void showPantallaJuegoDosJugadores();
+
 
 private:
     Ui::MainWindow *ui;
-    QWidget *currentWidget; // Puntero al widget actual
+    QWidget *currentWidget; // Puntero al widget actualº
 };
 #endif // MAINWINDOW_H
