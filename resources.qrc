@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>estilos/estilos.qss</file>
+        <file>imagenes/conecta4imagen.jpg</file>
     </qresource>
 </RCC>
