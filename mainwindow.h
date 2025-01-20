@@ -33,6 +33,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QWidget *currentWidget; // Puntero al widget actualº
+    QWidget *currentWidget; // Puntero al widget actual
+    Player *currentUser;  // Guardamos el usuario actualmente logueado
 };
 #endif // MAINWINDOW_H

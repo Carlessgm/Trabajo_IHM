@@ -1,10 +1,15 @@
 #include "pantallajuego.h"
 #include "ui_pantallajuego.h"
-
 #include <QMessageBox>
-#include <QMouseEvent>
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QLabel>
 #include <cstdlib>
 #include <ctime>
+#include <qevent.h>
+#include "dlgsegundojugador.h"
 
 PantallaJuego::PantallaJuego(QWidget *parent)
     : QWidget(parent)
@@ -13,50 +18,63 @@ PantallaJuego::PantallaJuego(QWidget *parent)
     , cols(8)
     , currentPlayer(1)
     , highlightedColumn(-1)
-    , playAgainstCPU(true)  // por defecto, vs CPU
+    , playAgainstCPU(false)
+    , twoPlayersMode(false)
+    , cpuTimer(nullptr)
     , p1(nullptr)
     , p2(nullptr)
-    , twoPlayersMode(false)
+    // Inicializamos marcadores a 0
+    , p1Wins(0)
+    , p2Wins(0)
+    , totalGames(0)
 {
     ui->setupUi(this);
-    tablero.resize(rows, QVector<int>(cols, 0));
 
-    setMinimumSize(cols * 40, rows * 40);
+    // Preguntar si CPU o 2 jugadores (ya lo tenías) ...
+    QMessageBox::StandardButton reply = QMessageBox::question(this,
+        "Elegir modo de juego",
+        "¿Quieres jugar contra la CPU?\n\n(Sí para CPU, No para 2 jugadores)",
+        QMessageBox::Yes | QMessageBox::No
+    );
+    if (reply == QMessageBox::Yes) {
+        playAgainstCPU = true;
+        twoPlayersMode = false;
+        p1 = Connect4::getInstance().getPlayer("Player1");
+    } else {
+        playAgainstCPU = false;
+        twoPlayersMode = true;
+        p1 = Connect4::getInstance().getPlayer("Player1");
+        if (!p1) {
+            QMessageBox::warning(this, "Error", "No se encontró al jugador principal. Cerrando...");
+            close();
+            return;
+        }
+        DlgSegundoJugador dlg(this);
+        if (dlg.exec() == QDialog::Accepted) {
+            p2 = dlg.getLoggedPlayer();
+            if (!p2) {
+                QMessageBox::warning(this, "Error", "No se pudo loguear el 2º jugador. Cerrando...");
+                close();
+                return;
+            }
+        } else {
+            close();
+            return;
+        }
+    }
+
+    // Inicializar tablero
+    tablero.resize(rows, QVector<int>(cols, 0));
+    setMinimumSize(cols*40, rows*40);
     setMouseTracking(true);
 
-    // Semilla random
+    // Semilla random (CPU)
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
-
-    // Temporizador para CPU
-    cpuTimer = new QTimer(this);
-    cpuTimer->setSingleShot(true);
-    connect(cpuTimer, &QTimer::timeout, this, &PantallaJuego::cpuMove);
-}
-
-// Constructor para 2 jugadores humanos
-PantallaJuego::PantallaJuego(Player* jugador1, Player* jugador2, QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::PantallaJuego)
-    , rows(7)
-    , cols(8)
-    , currentPlayer(1)
-    , highlightedColumn(-1)
-    , playAgainstCPU(false) // 2 jugadores => false
-    , p1(jugador1)
-    , p2(jugador2)
-    , twoPlayersMode(true)
-{
-    ui->setupUi(this);
-    tablero.resize(rows, QVector<int>(cols, 0));
-
-    setMinimumSize(cols * 40, rows * 40);
-    setMouseTracking(true);
-
-    // CPU no se utiliza
-    cpuTimer = nullptr;  // o new QTimer(this), si prefieres, pero no se usará.
-
-    // Semilla random para cualquier cosa, por si la quisieras
-    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    if (playAgainstCPU) {
+        cpuTimer = new QTimer(this);
+        cpuTimer->setSingleShot(true);
+        connect(cpuTimer, &QTimer::timeout, this, &PantallaJuego::cpuMove);
+    }
 }
 
 PantallaJuego::~PantallaJuego()
@@ -74,7 +92,6 @@ void PantallaJuego::paintEvent(QPaintEvent *event)
     int width = geom.width();
     int height = geom.height();
 
-    // Ajustar cellSize
     if ((width / cols) < (height / rows)) {
         cellSize = width / cols;
     } else {
@@ -84,31 +101,28 @@ void PantallaJuego::paintEvent(QPaintEvent *event)
     int x0 = (width - (cols * cellSize)) / 2;
     int y0 = (height - (rows * cellSize)) / 2;
 
-    // Fondo del tablero (azul oscuro)
+    // Fondo
     painter.setBrush(Qt::darkBlue);
-    painter.drawRect(x0, y0, cols * cellSize, rows * cellSize);
+    painter.drawRect(x0, y0, cols*cellSize, rows*cellSize);
 
     // Fichas
     for (int r = 0; r < rows; r++) {
         for (int c = 0; c < cols; c++) {
-            QRect circleRect(x0 + (c * cellSize + 5),
-                             y0 + (r * cellSize + 5),
-                             cellSize - 10,
-                             cellSize - 10);
-            if (tablero[r][c] == 0) {
+            QRect circleRect(x0 + c*cellSize + 5, y0 + r*cellSize + 5,
+                             cellSize - 10, cellSize - 10);
+            if (tablero[r][c] == 0)
                 painter.setBrush(Qt::white);
-            } else if (tablero[r][c] == 1) {
+            else if (tablero[r][c] == 1)
                 painter.setBrush(Qt::red);
-            } else {
+            else
                 painter.setBrush(Qt::yellow);
-            }
+
             painter.drawEllipse(circleRect);
         }
     }
 
-    // Círculo "fantasma" para la columna resaltada
+    // Ficha fantasma
     if (highlightedColumn != -1) {
-        // Buscar la fila más baja disponible
         int dropRow = -1;
         for (int r = rows - 1; r >= 0; r--) {
             if (tablero[r][highlightedColumn] == 0) {
@@ -117,13 +131,10 @@ void PantallaJuego::paintEvent(QPaintEvent *event)
             }
         }
         if (dropRow != -1) {
-            QRect ghostRect(
-                x0 + (highlightedColumn * cellSize + 5),
-                y0 + (dropRow * cellSize + 5),
-                cellSize - 10,
-                cellSize - 10
-            );
-            painter.setBrush(QColor(200, 200, 255, 128));
+            QRect ghostRect(x0 + highlightedColumn*cellSize + 5,
+                            y0 + dropRow*cellSize + 5,
+                            cellSize - 10, cellSize - 10);
+            painter.setBrush(QColor(200,200,255,128));
             painter.drawEllipse(ghostRect);
         }
     }
@@ -131,70 +142,93 @@ void PantallaJuego::paintEvent(QPaintEvent *event)
 
 void PantallaJuego::mousePressEvent(QMouseEvent *event)
 {
-    // Si es vs CPU y es turno de CPU, ignorar clicks
     if (playAgainstCPU && currentPlayer == 2) {
-        return;
+        return; // ignorar clicks si es turno CPU
     }
-
     if (event->button() == Qt::LeftButton) {
         int mouseX = event->pos().x();
-
         QRect geom = geometry();
         int width = geom.width();
-        int x0 = (width - (cols * cellSize)) / 2;
+        int x0 = (width - (cols*cellSize)) / 2;
         int column = (mouseX - x0) / cellSize;
 
         if (column >= 0 && column < cols) {
             int row;
             if (dropDisc(column, row)) {
-                update(); // Redibujar
-
-                // Comprobar si alguien ganó
+                update();
                 if (checkWin(row, column)) {
-                    // Quién ha ganado...
-                    QString winnerName = (currentPlayer == 1) ? "Jugador 1" : "Jugador 2";
-                    if (twoPlayersMode && p1 && p2) {
-                        winnerName = (currentPlayer == 1) ? p1->getNickName() : p2->getNickName();
+                    // Alguien gana
+                    QString winnerName;
+                    if (playAgainstCPU) {
+                        winnerName = (currentPlayer == 1) ? "Tú" : "CPU";
+                    } else {
+                        winnerName = (currentPlayer == 1) ? p1->getNickName()
+                                                          : p2->getNickName();
                     }
 
-                    QMessageBox::information(this, "Victoria",
-                                             QString("¡%1 ha ganado!").arg(winnerName));
-
-                    // Registrar la partida si es 2 jugadores...
+                    // Registrar en BD si es 2 jugadores
                     if (twoPlayersMode && p1 && p2) {
-                        Player* winnerP = (currentPlayer == 1) ? p1 : p2;
-                        Player* loserP  = (currentPlayer == 1) ? p2 : p1;
-                        winnerP->addPoints(10);
-                        Connect4::getInstance().registerRound(QDateTime::currentDateTime(), winnerP, loserP);
+                        Player* winner = (currentPlayer == 1) ? p1 : p2;
+                        Player* loser  = (currentPlayer == 1) ? p2 : p1;
+
+                        // Sumar puntos
+                        winner->addPoints(10);
+                        Connect4::getInstance().registerRound(QDateTime::currentDateTime(),
+                                                              winner, loser);
                     }
 
-                    // --- Preguntamos al usuario ---
-                    QMessageBox::StandardButton reply = QMessageBox::question(
-                        this,
-                        "Partida terminada",
-                        "¿Quieres jugar otra partida?",
-                        QMessageBox::Yes | QMessageBox::No
-                        );
-                    if (reply == QMessageBox::Yes) {
-                        // Reiniciar el tablero y alternar el turno
+                    // Actualizar marcadores
+                    totalGames++;
+                    if (currentPlayer == 1)
+                        p1Wins++;
+                    else
+                        p2Wins++;
+
+                    // Mostrar diálogo final: ¿Jugar otra o salir?
+                    // (ver más abajo)
+
+                    QDialog finalDialog(this);
+                    finalDialog.setWindowTitle("Fin de la Partida");
+                    QVBoxLayout* mainLay = new QVBoxLayout(&finalDialog);
+                    QLabel* lbl = new QLabel(
+                        QString("¡%1 ha ganado!").arg(winnerName),
+                        &finalDialog
+                    );
+                    mainLay->addWidget(lbl);
+
+                    QHBoxLayout* btnLay = new QHBoxLayout;
+                    QPushButton* btnAgain = new QPushButton("Jugar de nuevo", &finalDialog);
+                    QPushButton* btnExit = new QPushButton("Salir", &finalDialog);
+                    btnLay->addWidget(btnAgain);
+                    btnLay->addWidget(btnExit);
+                    mainLay->addLayout(btnLay);
+
+                    // Conexiones
+                    connect(btnAgain, &QPushButton::clicked, [&]() {
+                        finalDialog.accept();
+                    });
+                    connect(btnExit, &QPushButton::clicked, [&]() {
+                        finalDialog.reject();
+                    });
+
+                    if (finalDialog.exec() == QDialog::Accepted) {
+                        // Jugar de nuevo
                         resetBoard(true);
                     } else {
-                        // Cerrar la ventana si no quiere seguir
-                        close();
+                        // Salir => antes de cerrar, mostramos el marcador final
+                        mostrarMarcadorFinal();
+                        //close();
                     }
                     return;
                 }
 
-                // Cambiar de jugador
+                // Cambiar turno
                 currentPlayer = (currentPlayer == 1) ? 2 : 1;
-
-                // Si es vs CPU y ahora es turno de CPU
                 if (playAgainstCPU && currentPlayer == 2) {
-                    cpuTimer->start(500); // Jugada de CPU en 0.5 s
+                    cpuTimer->start(500);
                 }
             } else {
-                QMessageBox::warning(this, "Columna Llena",
-                                     "La columna está llena. Elige otra.");
+                QMessageBox::warning(this, "Columna llena", "Columna llena. Elige otra.");
             }
         }
     }
@@ -209,7 +243,7 @@ void PantallaJuego::updateHighlightedColumn(int mouseX)
 {
     QRect geom = geometry();
     int width = geom.width();
-    int x0 = (width - (cols * cellSize)) / 2;
+    int x0 = (width - (cols*cellSize)) / 2;
 
     int col = (mouseX - x0) / cellSize;
     if (col >= 0 && col < cols) {
@@ -218,7 +252,6 @@ void PantallaJuego::updateHighlightedColumn(int mouseX)
             update();
         }
     } else {
-        // Fuera del tablero
         if (highlightedColumn != -1) {
             highlightedColumn = -1;
             update();
@@ -228,7 +261,7 @@ void PantallaJuego::updateHighlightedColumn(int mouseX)
 
 bool PantallaJuego::dropDisc(int column, int &row)
 {
-    for (row = rows - 1; row >= 0; row--) {
+    for (row = rows-1; row >= 0; row--) {
         if (tablero[row][column] == 0) {
             tablero[row][column] = currentPlayer;
             return true;
@@ -239,38 +272,30 @@ bool PantallaJuego::dropDisc(int column, int &row)
 
 bool PantallaJuego::checkWin(int row, int col)
 {
-    int player = tablero[row][col];
-    if (player == 0) return false;
+    int pv = tablero[row][col];
+    if (pv == 0) return false;
 
-    // Direcciones: horizontal, vertical, diag /, diag
     QVector<QPair<int,int>> directions = {
         {0,1}, {1,0}, {1,1}, {1,-1}
     };
-
     for (auto dir : directions) {
         int count = 1;
-
-        // hacia un lado
+        // sentido +dir
         int rr = row + dir.first;
         int cc = col + dir.second;
-        while (rr >= 0 && rr < rows && cc >= 0 && cc < cols
-               && tablero[rr][cc] == player)
-        {
+        while (rr>=0 && rr<rows && cc>=0 && cc<cols && tablero[rr][cc] == pv) {
             count++;
             rr += dir.first;
             cc += dir.second;
         }
-        // hacia el otro lado
+        // sentido -dir
         rr = row - dir.first;
         cc = col - dir.second;
-        while (rr >= 0 && rr < rows && cc >= 0 && cc < cols
-               && tablero[rr][cc] == player)
-        {
+        while (rr>=0 && rr<rows && cc>=0 && cc<cols && tablero[rr][cc] == pv) {
             count++;
             rr -= dir.first;
             cc -= dir.second;
         }
-
         if (count >= 4) return true;
     }
     return false;
@@ -284,44 +309,88 @@ void PantallaJuego::cpuMove()
     } while (!dropDisc(column, row));
 
     update();
-
     if (checkWin(row, column)) {
+        // CPU gana
         QMessageBox::information(this, "Victoria", "¡La CPU ha ganado!");
-
-        QMessageBox::StandardButton reply = QMessageBox::question(
-            this,
-            "Partida terminada",
-            "¿Quieres jugar otra partida?",
-            QMessageBox::Yes | QMessageBox::No
-            );
-        if (reply == QMessageBox::Yes) {
-            // Re-iniciar
-            resetBoard(false); // Modo CPU: no hace falta alternar, siempre inicia Jugador 1
-        } else {
-            close();
-        }
+        // Marcador
+        totalGames++;
+        p2Wins++; // CPU la consideramos "Jugador 2"
+        //close();
         return;
     }
-
-
-    currentPlayer = 1; // vuelve al jugador humano
+    currentPlayer = 1;
 }
 
 void PantallaJuego::resetBoard(bool alternateTurn)
 {
-    // Poner todas las celdas a 0
+    // Poner todo a 0
     for (int r = 0; r < rows; r++) {
         for (int c = 0; c < cols; c++) {
             tablero[r][c] = 0;
         }
     }
-    // Alternar quién empieza si es modo 2 jugadores
     if (twoPlayersMode && alternateTurn) {
         currentPlayer = (currentPlayer == 1) ? 2 : 1;
     } else {
-        // Modo CPU o no alternar: vuelve siempre a jugador 1
         currentPlayer = 1;
     }
-    // Forzar repintado
+    highlightedColumn = -1;
     update();
+}
+
+// Muestra un diálogo con el "marcador final" (cuántas ganó p1 / p2)
+void PantallaJuego::mostrarMarcadorFinal()
+{
+    // Creamos un QDialog "scoreDialog"
+    QDialog scoreDialog(this);
+    scoreDialog.setWindowTitle("Marcador de la sesión");
+
+    QVBoxLayout* mainLay = new QVBoxLayout(&scoreDialog);
+    QString info;
+
+    // 2 jugadores
+    if (twoPlayersMode && p1 && p2) {
+        info = QString("Partidas jugadas: %1\n"
+                       "%2 ha ganado %3 veces\n"
+                       "%4 ha ganado %5 veces\n")
+                .arg(totalGames)
+                .arg(p1->getNickName())
+                .arg(p1Wins)
+                .arg(p2->getNickName())
+                .arg(p2Wins);
+    } else {
+        // vs CPU => p1Wins es "tú", p2Wins es "CPU"
+        info = QString("Partidas jugadas: %1\n"
+                       "Tú has ganado: %2\n"
+                       "CPU ha ganado: %3\n")
+                .arg(totalGames)
+                .arg(p1Wins)
+                .arg(p2Wins);
+    }
+    QLabel* lbl = new QLabel(info, &scoreDialog);
+    mainLay->addWidget(lbl);
+
+    // Botones
+    QHBoxLayout* btnLay = new QHBoxLayout;
+    QPushButton* btnReplay = new QPushButton("Volver a jugar", &scoreDialog);
+    QPushButton* btnClose = new QPushButton("Cerrar", &scoreDialog);
+    btnLay->addWidget(btnReplay);
+    btnLay->addWidget(btnClose);
+    mainLay->addLayout(btnLay);
+
+    // Conexiones
+    connect(btnReplay, &QPushButton::clicked, [&]() {
+        // Reiniciamos el tablero
+        scoreDialog.accept();
+        resetBoard(/*alternateTurn=*/true);
+    });
+    connect(btnClose, &QPushButton::clicked, [&]() {
+        scoreDialog.reject();
+    });
+
+    // Mostrar modal
+    if (scoreDialog.exec() == QDialog::Rejected) {
+        // Si cierra el scoreboard => close total
+        //close();
+    }
 }

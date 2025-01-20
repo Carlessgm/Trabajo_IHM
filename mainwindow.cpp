@@ -146,7 +146,7 @@ void MainWindow::showPantallaJuegoDosJugadores()
             currentWidget = nullptr;
         }
         // Ojo, usaremos una nueva sobrecarga de PantallaJuego (ver abajo)
-        currentWidget = new PantallaJuego(player1, player2, this);
+        currentWidget = new PantallaJuego(this);
         setCentralWidget(currentWidget);
     }
 }

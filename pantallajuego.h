@@ -19,7 +19,7 @@ public:
     explicit PantallaJuego(QWidget *parent = nullptr);
 
     // Constructor nuevo (2 jugadores)
-    explicit PantallaJuego(Player* jugador1, Player* jugador2, QWidget *parent = nullptr);
+    //explicit PantallaJuego(Player* p1, Player* p2, QWidget *parent = nullptr);
 
     ~PantallaJuego();
 
@@ -38,6 +38,7 @@ private:
     int currentPlayer;
     int highlightedColumn;
     bool playAgainstCPU;
+    bool twoPlayersMode;
 
     // Para CPU
     QTimer *cpuTimer;
@@ -45,7 +46,11 @@ private:
     // Para 2 jugadores:
     Player* p1;
     Player* p2;
-    bool twoPlayersMode;
+
+    // Marcadores de la sesión
+    int p1Wins;
+    int p2Wins;
+    int totalGames;
 
     bool dropDisc(int column, int &row);
     bool checkWin(int row, int col);
@@ -54,6 +59,10 @@ private:
 
     // Reiniciar partida
     void resetBoard(bool alternateTurn);
+
+    // Mostrar resultado final
+    void mostrarMarcadorFinal();
+
 };
 
 #endif // PANTALLAJUEGO_H
