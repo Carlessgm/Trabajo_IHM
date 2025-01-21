@@ -95,7 +95,7 @@ void MainWindow::showPantallaJuego()
         currentWidget = nullptr;
     }
     // PantallaJuego sin parámetros -> Modo contra CPU
-    currentWidget = new PantallaJuego(this);
+    currentWidget = new PantallaJuego(this, currentUser);
     setCentralWidget(currentWidget);
 }
 

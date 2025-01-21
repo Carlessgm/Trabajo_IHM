@@ -1,4 +1,6 @@
 #include "pantallajuego.h"
+#include "pantallainicio.h"
+#include "connect4.h"
 #include "ui_pantallajuego.h"
 #include <QMessageBox>
 #include <QDialog>
@@ -11,7 +13,7 @@
 #include <qevent.h>
 #include "dlgsegundojugador.h"
 
-PantallaJuego::PantallaJuego(QWidget *parent)
+PantallaJuego::PantallaJuego(QWidget *parent, Player* p)
     : QWidget(parent)
     , ui(new Ui::PantallaJuego)
     , rows(7)
@@ -21,16 +23,15 @@ PantallaJuego::PantallaJuego(QWidget *parent)
     , playAgainstCPU(false)
     , twoPlayersMode(false)
     , cpuTimer(nullptr)
-    , p1(nullptr)
     , p2(nullptr)
+    , p1(p)
+    , playing(true)
     // Inicializamos marcadores a 0
     , p1Wins(0)
     , p2Wins(0)
     , totalGames(0)
 {
     ui->setupUi(this);
-
-
 
     // Preguntar si CPU o 2 jugadores (ya lo tenías) ...
     QMessageBox msgBox(this);
@@ -41,6 +42,7 @@ PantallaJuego::PantallaJuego(QWidget *parent)
     // Agregar botones personalizados
     QPushButton *btnCPU = msgBox.addButton("CPU", QMessageBox::AcceptRole);
     QPushButton *btn1vs1 = msgBox.addButton("1VS1", QMessageBox::RejectRole);
+    QMessageBox::warning(this, "Error", p1->getNickName());
 
     // Mostrar el QMessageBox y capturar la respuesta
     msgBox.exec();
@@ -49,16 +51,15 @@ PantallaJuego::PantallaJuego(QWidget *parent)
     if (msgBox.clickedButton() == btnCPU) {
         playAgainstCPU = true;
         twoPlayersMode = false;
-        p1 = Connect4::getInstance().getPlayer("Player1");
     } else if (msgBox.clickedButton() == btn1vs1) {
         playAgainstCPU = false;
         twoPlayersMode = true;
-        p1 = Connect4::getInstance().getPlayer("Player1");
         if (!p1) {
             QMessageBox::warning(this, "Error", "No se encontró al jugador principal. Cerrando...");
             close();
             return;
         }
+
         DlgSegundoJugador dlg(this);
         if (dlg.exec() == QDialog::Accepted) {
             p2 = dlg.getLoggedPlayer();
@@ -155,7 +156,7 @@ void PantallaJuego::mousePressEvent(QMouseEvent *event)
     if (playAgainstCPU && currentPlayer == 2) {
         return; // ignorar clicks si es turno CPU
     }
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton && playing == true) {
         int mouseX = event->pos().x();
         QRect geom = geometry();
         int width = geom.width();
@@ -170,7 +171,7 @@ void PantallaJuego::mousePressEvent(QMouseEvent *event)
                     // Alguien gana
                     QString winnerName;
                     if (playAgainstCPU) {
-                        winnerName = (currentPlayer == 1) ? "Tú" : "CPU";
+                        winnerName = (currentPlayer == 1) ? p1->getNickName() : "CPU";
                     } else {
                         winnerName = (currentPlayer == 1) ? p1->getNickName()
                                                           : p2->getNickName();
@@ -201,7 +202,7 @@ void PantallaJuego::mousePressEvent(QMouseEvent *event)
                     finalDialog.setWindowTitle("Fin de la Partida");
                     QVBoxLayout* mainLay = new QVBoxLayout(&finalDialog);
                     QLabel* lbl = new QLabel(
-                        QString("¡%1 ha ganado!").arg(winnerName),
+                        QString("¡" + winnerName+" ha ganado!"),
                         &finalDialog
                     );
                     mainLay->addWidget(lbl);
@@ -306,7 +307,10 @@ bool PantallaJuego::checkWin(int row, int col)
             rr -= dir.first;
             cc -= dir.second;
         }
-        if (count >= 4) return true;
+        if (count >= 4){
+            playing = false;
+            return true;
+        }
     }
     return false;
 }
@@ -345,6 +349,7 @@ void PantallaJuego::resetBoard(bool alternateTurn)
         currentPlayer = 1;
     }
     highlightedColumn = -1;
+    playing = true;
     update();
 }
 
@@ -371,11 +376,12 @@ void PantallaJuego::mostrarMarcadorFinal()
     } else {
         // vs CPU => p1Wins es "tú", p2Wins es "CPU"
         info = QString("Partidas jugadas: %1\n"
-                       "Tú has ganado: %2\n"
+                       "%4 has ganado: %2\n"
                        "CPU ha ganado: %3\n")
                 .arg(totalGames)
                 .arg(p1Wins)
-                .arg(p2Wins);
+                .arg(p2Wins)
+                .arg(p1->getNickName());
     }
     QLabel* lbl = new QLabel(info, &scoreDialog);
     mainLay->addWidget(lbl);

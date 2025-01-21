@@ -16,7 +16,7 @@ class PantallaJuego : public QWidget
 
 public:
     // Constructor tradicional (vs CPU)
-    explicit PantallaJuego(QWidget *parent = nullptr);
+    explicit PantallaJuego(QWidget *parent = nullptr, Player* p1 = nullptr);
 
     // Constructor nuevo (2 jugadores)
     //explicit PantallaJuego(Player* p1, Player* p2, QWidget *parent = nullptr);
@@ -39,6 +39,7 @@ private:
     int highlightedColumn;
     bool playAgainstCPU;
     bool twoPlayersMode;
+    bool playing;
 
     // Para CPU
     QTimer *cpuTimer;
