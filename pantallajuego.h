@@ -62,7 +62,7 @@ private:
     void resetBoard(bool alternateTurn);
 
     // Mostrar resultado final
-    void mostrarMarcadorFinal();
+    void mostrarMarcadorFinal(QString ganador);
 
 };
 
