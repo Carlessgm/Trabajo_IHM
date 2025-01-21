@@ -1,6 +1,7 @@
 #ifndef PANTALLAINICIO_H
 #define PANTALLAINICIO_H
 
+#include "Player.h"
 #include <QWidget>
 #include <qpushbutton.h>
 
@@ -21,7 +22,8 @@ private slots:
     void onbotonRegistrar_clicked();
 
 signals:
-    void loginSuccessful();
+    void loginSuccessful(Player* user);
+
 
 private:
     Ui::PantallaInicio *ui;

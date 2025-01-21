@@ -49,7 +49,6 @@ void PantallaInicio::onbotonIniciarSesion_clicked()
 {
     QString usuario = ui->lineUsuario->text();
     QString contrasena = ui->lineContrasena->text();
-
     if (usuario.isEmpty() || contrasena.isEmpty()) {
         QMessageBox::warning(this, "Error", "Por favor, complete todos los campos.");
         return;
@@ -62,8 +61,8 @@ void PantallaInicio::onbotonIniciarSesion_clicked()
     if (player) {
         QMessageBox::information(this, "Inicio de sesión exitoso", "Bienvenido, " + player->getNickName() + "!");
         qDebug() << "Jugador logueado: " << player->getNickName();
-        emit loginSuccessful();
-        delete player; // Si player fue retornado desde DAO, elimina para evitar fugas
+        emit loginSuccessful(player);
+        //delete player; // Si player fue retornado desde DAO, elimina para evitar fugas
     } else {
         QMessageBox::warning(this, "Error", "Usuario o contraseña incorrectos.");
     }

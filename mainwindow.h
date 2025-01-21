@@ -29,6 +29,7 @@ private slots:
     void showPantallaRanking();
     void showPantallaPartidas();
     void showPantallaJuegoDosJugadores();
+    void showPantallaPerfil();
 
 
 private:

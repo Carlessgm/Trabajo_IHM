@@ -30,17 +30,27 @@ PantallaJuego::PantallaJuego(QWidget *parent)
 {
     ui->setupUi(this);
 
+
+
     // Preguntar si CPU o 2 jugadores (ya lo tenías) ...
-    QMessageBox::StandardButton reply = QMessageBox::question(this,
-        "Elegir modo de juego",
-        "¿Quieres jugar contra la CPU?\n\n(Sí para CPU, No para 2 jugadores)",
-        QMessageBox::Yes | QMessageBox::No
-    );
-    if (reply == QMessageBox::Yes) {
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle("Elegir modo de juego");
+    msgBox.setText("¿Contra quien quieres Jugar?\n\n(Elige una opción)");
+    msgBox.setIcon(QMessageBox::Question);
+
+    // Agregar botones personalizados
+    QPushButton *btnCPU = msgBox.addButton("CPU", QMessageBox::AcceptRole);
+    QPushButton *btn1vs1 = msgBox.addButton("1VS1", QMessageBox::RejectRole);
+
+    // Mostrar el QMessageBox y capturar la respuesta
+    msgBox.exec();
+
+    // Verificar qué botón fue presionado
+    if (msgBox.clickedButton() == btnCPU) {
         playAgainstCPU = true;
         twoPlayersMode = false;
         p1 = Connect4::getInstance().getPlayer("Player1");
-    } else {
+    } else if (msgBox.clickedButton() == btn1vs1) {
         playAgainstCPU = false;
         twoPlayersMode = true;
         p1 = Connect4::getInstance().getPlayer("Player1");

@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "pantallaperfil.h"
 #include "ui_mainwindow.h"
 
 #include "pantallainicio.h"
@@ -19,32 +20,35 @@ MainWindow::MainWindow(QWidget *parent)
     QAction *gameAction = new QAction("Mostrar Pantalla Juego", this);
     QAction *rankingAction = new QAction("Mostrar Ranking", this);
     QAction *partidasAction = new QAction("Partidas Jugadas", this);
+    QAction *editProfileAction = new QAction("Editar Perfil", this);
+
 
     // *** NUEVA ACCIÓN *** para 2 jugadores:
-    QAction *twoPlayersAction = new QAction("Jugar vs. 2º Jugador", this);
-
+    //QAction *twoPlayersAction = new QAction("Jugar vs. 2º Jugador", this);
     // Agregar acciones a la barra de herramientas
     ui->toolBar->addAction(loginAction);
     ui->toolBar->addAction(gameAction);
     ui->toolBar->addAction(rankingAction);
     ui->toolBar->addAction(partidasAction);
-
+    ui->toolBar->addAction(editProfileAction);
     // Añadimos la acción de 2 jugadores
-    ui->toolBar->addAction(twoPlayersAction);
+   // ui->toolBar->addAction(twoPlayersAction);
 
     // Deshabilitar botón de "Mostrar Pantalla Juego" inicialmente
     gameAction->setEnabled(false);
-    twoPlayersAction->setEnabled(false);
+    editProfileAction->setEnabled(false);
+    //twoPlayersAction->setEnabled(false);
 
     // Conectar acciones con slots
     connect(loginAction, &QAction::triggered, this, &MainWindow::showPantallaInicio);
     connect(gameAction, &QAction::triggered, this, &MainWindow::showPantallaJuego);
     connect(rankingAction, &QAction::triggered, this, &MainWindow::showPantallaRanking);
     connect(partidasAction, &QAction::triggered, this, &MainWindow::showPantallaPartidas);
+    connect(editProfileAction, &QAction::triggered, this, &MainWindow::showPantallaPerfil);
 
 
     // Conectar la acción de 2 jugadores
-    connect(twoPlayersAction, &QAction::triggered, this, &MainWindow::showPantallaJuegoDosJugadores);
+    //connect(twoPlayersAction, &QAction::triggered, this, &MainWindow::showPantallaJuegoDosJugadores);
 
     // Mostrar inicialmente la Pantalla de Inicio
     showPantallaInicio();
@@ -70,7 +74,10 @@ void MainWindow::showPantallaInicio()
     setCentralWidget(currentWidget);
 
     // Cuando el login sea exitoso, habilitamos los botones de juego
-    connect(pantallaInicio, &PantallaInicio::loginSuccessful, this, [this]() {
+    connect(pantallaInicio, &PantallaInicio::loginSuccessful, this, [this](Player* user) {
+        // Guardamos el usuario logueado
+        currentUser = user;
+
         // Habilitar "Mostrar Pantalla Juego"
         ui->toolBar->actions()[1]->setEnabled(true);
         // Habilitar "Jugar vs. 2º Jugador" (está en la posición 4 del toolbar, index 4)
@@ -149,4 +156,17 @@ void MainWindow::showPantallaJuegoDosJugadores()
         currentWidget = new PantallaJuego(this);
         setCentralWidget(currentWidget);
     }
+}
+void MainWindow::showPantallaPerfil()
+{
+    if (!currentUser) {
+        QMessageBox::warning(this, "Error", "No hay usuario logueado.");
+        return;
+    }
+    if (currentWidget) {
+        delete currentWidget;
+        currentWidget = nullptr;
+    }
+    currentWidget = new PantallaPerfil(currentUser, this);
+    setCentralWidget(currentWidget);
 }
