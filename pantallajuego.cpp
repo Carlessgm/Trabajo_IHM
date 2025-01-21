@@ -327,10 +327,10 @@ void PantallaJuego::cpuMove()
     update();
     if (checkWin(row, column)) {
         // CPU gana
-        QMessageBox::information(this, "Victoria", "¡La CPU ha ganado!");
         // Marcador
         totalGames++;
         p2Wins++; // CPU la consideramos "Jugador 2"
+        mostrarMarcadorFinal("CPU");
         //close();
         return;
     }
