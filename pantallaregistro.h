@@ -33,6 +33,7 @@ private:
     bool validarEdad();  // Validar la edad
     QLineEdit *line_edits[8];
     void mostrarError(const QString &mensaje);  // Mostrar mensajes de error
+    bool see_password = false;
 };
 
 #endif // PANTALLAREGISTRO_H

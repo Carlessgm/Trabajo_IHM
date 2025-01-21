@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>estilos/estilos.qss</file>
         <file>imagenes/conecta4imagen.jpg</file>
+        <file>imagenes/ojo_abierto.png</file>
+        <file>imagenes/ojo_cerrado.png</file>
     </qresource>
 </RCC>

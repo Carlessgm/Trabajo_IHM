@@ -27,6 +27,20 @@ PantallaRegistro::PantallaRegistro(QWidget *parent) :
     connect(ui->lineEditCorreo, &QLineEdit::editingFinished, this, &PantallaRegistro::validarEmail);
     connect(ui->lineEditConfirmarCorreo, &QLineEdit::editingFinished, this, &PantallaRegistro::validarEmail);
     connect(ui->dateEditNacimiento, &QDateEdit::editingFinished, this, &PantallaRegistro::validarEdad);
+    connect(ui->vercontrasena, &QRadioButton::clicked, this, [=](){
+        if(ui->vercontrasena->isChecked()){
+            ui->lineEditContrasena->setEchoMode(QLineEdit::Normal);
+        }else{
+            ui->lineEditContrasena->setEchoMode(QLineEdit::Password);
+        }
+    });
+    connect(ui->ver_contrasenarep, &QRadioButton::clicked, this, [=](){
+        if(ui->ver_contrasenarep->isChecked()){
+            ui->lineEditContrasena->setEchoMode(QLineEdit::Normal);
+        }else{
+            ui->lineEditContrasena->setEchoMode(QLineEdit::Password);
+        }
+    });
 
 }
 

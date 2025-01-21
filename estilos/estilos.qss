@@ -38,6 +38,19 @@ QPushButton {
     color: #999999;
 
 }
+QRadioButton::indicator {
+    width: 16px;
+    height: 16px;
+}
+
+QRadioButton::indicator::unchecked {
+    image: url(:/imagenes/ojo_abierto.png);
+}
+
+QRadioButton::indicator::checked {
+    image: url(:/imagenes/ojo_cerrado.png);
+}
+
 
 QPushButton:hover {
     background-color: #6666ff;

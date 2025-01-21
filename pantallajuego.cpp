@@ -69,8 +69,10 @@ PantallaJuego::PantallaJuego(QWidget *parent, Player* p)
                 return;
             }
         } else {
-            close();
-            return;
+
+            //close();
+            playing = false;
+            QMessageBox::information(this,"Contrincante", "Elija contra quien jugar");
         }
     }
 
@@ -172,6 +174,7 @@ void PantallaJuego::mousePressEvent(QMouseEvent *event)
                     QString winnerName;
                     if (playAgainstCPU) {
                         winnerName = (currentPlayer == 1) ? p1->getNickName() : "CPU";
+                        p1->addPoints(5);
                     } else {
                         winnerName = (currentPlayer == 1) ? p1->getNickName()
                                                           : p2->getNickName();
