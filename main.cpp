@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     // Intenta cargar la hoja de estilo desde los recursos
     if (file.open(QFile::ReadOnly)) {
         QString styleSheet = QLatin1String(file.readAll());
-        //w.setStyleSheet(styleSheet);
+        w.setStyleSheet(styleSheet);
         qDebug() << "StyleSheet set";
         file.close();
     }else{

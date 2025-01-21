@@ -19,7 +19,7 @@ PantallaRegistro::PantallaRegistro(QWidget *parent) :
     line_edits[5]= ui->lineEditAvatar;
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &PantallaRegistro::reject);
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &PantallaRegistro::okButtonClicked);
-
+    ui->label->setProperty("aux", true);
 
     connect(ui->lineEditUsuario, &QLineEdit::editingFinished, this, &PantallaRegistro::validarNombreUsuario);
     connect(ui->lineEditContrasena, &QLineEdit::editingFinished, this, &PantallaRegistro::validarContrasenas);
@@ -192,7 +192,7 @@ void PantallaRegistro::validarNombreUsuario()
     }else{
         ui->lineEditUsuario->setProperty("Valido", true);
     }
-    ui->lineEditUsuario->setStyleSheet(valido_estilo);
+    setStyleSheet(valido_estilo);
 }
 
 bool PantallaRegistro::validarEdad()

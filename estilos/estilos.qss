@@ -2,8 +2,21 @@
 QMainWindow {
     background-color: #2f7cc0; /* Azul de la iamgen para el fondo */
 }
-#PantallaRegistro{
+PantallaRegistro{
     background-color: #ffffff; /* Gris muy claro para el fondo */
+}
+
+
+QLineEdit[Valido = 'false']{
+    border-color: #ff0000; background-color: #ff0000;
+}
+
+QLineEdit[Valido = 'true']{
+    border-color: #222222; background-color: #222222;
+}
+
+QLabel[aux = 'true']{
+    font-size: 12px;
 }
 
 /* Estilo de los QLabel */
@@ -20,7 +33,7 @@ QPushButton {
     border: 2px solid #646464;
     border-radius: 4px;
     padding: 6px 12px;
-    font-size: 18px;
+    font-size: 16px;
     font-family: Arial, sans-serif;
     color: #999999;
 
@@ -29,7 +42,7 @@ QPushButton {
 QPushButton:hover {
     background-color: #6666ff;
     color: #000000;
-    font-size: 20px;
+    font-size: 16px;
 
 }
 

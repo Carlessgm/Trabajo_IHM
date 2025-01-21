@@ -25,8 +25,7 @@ private slots:
 
 private:
     Ui::PantallaRegistro *ui;
-    QString valido_estilo = "QLineEdit[Valido = 'false']{ border-color: #ff0000; background-color: #ff0000};"
-                        "QLineEdit[Valido = 'true']{ border-color: #ffffff; background-color: #ffffff};";
+    QString valido_estilo = "";
     bool validarFormulario();  // Validar los campos del formulario
     void validarEmail();  // Validar correo electrónico
     void validarContrasenas();  // Validar que las contraseñas coincidan
