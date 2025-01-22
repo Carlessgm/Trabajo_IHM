@@ -68,6 +68,11 @@ PantallaJuego::PantallaJuego(QWidget *parent, Player* p)
                 close();
                 return;
             }
+            if(p2->getNickName() == p1->getNickName()){
+                QMessageBox::warning(this, "Error", "No puedes jugar contra ti mismo");
+                close();
+                return;
+            }
         } else {
 
             //close();
