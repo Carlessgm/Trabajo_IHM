@@ -36,9 +36,9 @@ PantallaRegistro::PantallaRegistro(QWidget *parent) :
     });
     connect(ui->ver_contrasenarep, &QRadioButton::clicked, this, [=](){
         if(ui->ver_contrasenarep->isChecked()){
-            ui->lineEditContrasena->setEchoMode(QLineEdit::Normal);
+            ui->lineEditConfirmarContrasena->setEchoMode(QLineEdit::Normal);
         }else{
-            ui->lineEditContrasena->setEchoMode(QLineEdit::Password);
+            ui->lineEditConfirmarContrasena->setEchoMode(QLineEdit::Password);
         }
     });
 
