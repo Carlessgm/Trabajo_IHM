@@ -24,7 +24,13 @@ PantallaInicio::PantallaInicio(QWidget *parent) :
 
 
     connect(ui->botonOlvideContrasena, &QPushButton::clicked, this, &PantallaInicio::on_botonOlvideContrasena_clicked);
-
+    connect(ui->radioButton, &QRadioButton::clicked, this, [=](){
+        if(ui->radioButton->isChecked()){
+            ui->lineContrasena->setEchoMode(QLineEdit::Normal);
+        }else{
+            ui->lineContrasena->setEchoMode(QLineEdit::Password);
+        }
+    });
 
     // Cargar una imagen en el QLabel
     QPixmap imagen(":/imagenes/conecta4imagen.jpg"); // Asegúrate de que la ruta sea correcta
