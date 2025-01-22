@@ -2,7 +2,8 @@
 #define PANTALLAPARTIDAS_H
 
 #include <QWidget>
-#include "partidatablemodel.h" // Modelo para manejar las partidas
+#include <QDate>
+#include "partidatablemodel.h"
 
 namespace Ui {
 class PantallaPartidas;
@@ -18,9 +19,11 @@ public:
 
 private:
     Ui::PantallaPartidas *ui;
-    PartidaTableModel *tableModel; // Modelo para mostrar la tabla de partidas
+    PartidaTableModel *tableModel; // Modelo para manejar las partidas en la tabla
 
-    void cargarPartidas(); // Método para cargar las partidas
+    // Métodos
+    void cargarPartidas(const QDate &fechaInicial, const QDate &fechaFinal, const QString &tipo); // Carga las partidas según el rango de fechas
+    void aplicarFiltro(); // Aplica el filtro según las fechas seleccionadas
 };
 
 #endif // PANTALLAPARTIDAS_H

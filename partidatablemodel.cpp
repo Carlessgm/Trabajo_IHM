@@ -4,24 +4,36 @@
 PartidaTableModel::PartidaTableModel(QObject *parent)
     : QAbstractTableModel(parent) {}
 
-void PartidaTableModel::setPartidas(const QList<Partida*> &partidas) {
+PartidaTableModel::~PartidaTableModel()
+{
+    // Eliminar todas las partidas al destruir el modelo
+    qDeleteAll(m_partidas);
+    m_partidas.clear();
+}
+
+void PartidaTableModel::setPartidas(const QList<Partida*> &partidas)
+{
     beginResetModel();
-    m_partidas = partidas;
+    qDeleteAll(m_partidas); // Limpiar la memoria de las partidas previas
+    m_partidas = partidas; // Asignar las nuevas partidas
     endResetModel();
 }
 
-int PartidaTableModel::rowCount(const QModelIndex &parent) const {
+int PartidaTableModel::rowCount(const QModelIndex &parent) const
+{
     if (parent.isValid()) return 0;
     return m_partidas.size();
 }
 
-int PartidaTableModel::columnCount(const QModelIndex &parent) const {
+int PartidaTableModel::columnCount(const QModelIndex &parent) const
+{
     if (parent.isValid()) return 0;
     return 3; // Fecha, Ganador, Perdedor
 }
 
-QVariant PartidaTableModel::data(const QModelIndex &index, int role) const {
-    if (!index.isValid()) return QVariant();
+QVariant PartidaTableModel::data(const QModelIndex &index, int role) const
+{
+    if (!index.isValid() || index.row() >= m_partidas.size()) return QVariant();
 
     Partida *partida = m_partidas.at(index.row());
     if (!partida) return QVariant();
@@ -43,7 +55,8 @@ QVariant PartidaTableModel::data(const QModelIndex &index, int role) const {
     return QVariant();
 }
 
-QVariant PartidaTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
+QVariant PartidaTableModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
         switch (section) {
         case 0: return "Fecha";
