@@ -31,6 +31,7 @@ private slots:
     void showPantallaJuegoDosJugadores();
     void showPantallaPerfil();
     void toggleDarkMode();
+    void showPantallaRecuperarClave();
 
 private:
     Ui::MainWindow *ui;

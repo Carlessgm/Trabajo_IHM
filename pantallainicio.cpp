@@ -1,4 +1,5 @@
 #include "pantallainicio.h"
+#include "pantallarecuperarclave.h"
 #include "ui_pantallainicio.h"
 #include "pantallajuego.h"
 #include "pantallaregistro.h"
@@ -20,6 +21,10 @@ PantallaInicio::PantallaInicio(QWidget *parent) :
     // Conectar el botón de registro (puedes dejarlo vacío por ahora)
     connect(ui->botonRegistrar, &QPushButton::clicked, this, &PantallaInicio::onbotonRegistrar_clicked);
     ui->lineContrasena->setEchoMode(QLineEdit::Password);
+
+
+    connect(ui->botonOlvideContrasena, &QPushButton::clicked, this, &PantallaInicio::on_botonOlvideContrasena_clicked);
+
 
     // Cargar una imagen en el QLabel
     QPixmap imagen(":/imagenes/conecta4imagen.jpg"); // Asegúrate de que la ruta sea correcta
@@ -67,3 +72,9 @@ void PantallaInicio::onbotonIniciarSesion_clicked()
         QMessageBox::warning(this, "Error", "Usuario o contraseña incorrectos.");
     }
 }
+
+void PantallaInicio::on_botonOlvideContrasena_clicked()
+{
+    emit forgotPasswordRequested();
+}
+

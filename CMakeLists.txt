@@ -41,6 +41,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         partidatablemodel.h partidatablemodel.cpp
         dlgsegundojugador.h dlgsegundojugador.cpp
         pantallaperfil.h pantallaperfil.cpp pantallaperfil.ui
+        pantallarecuperarclave.h pantallarecuperarclave.cpp pantallarecuperarclave.ui
 
 
 

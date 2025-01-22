@@ -58,6 +58,21 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QPushButton" name="botonOlvideContrasena">
+     <property name="font">
+      <font>
+       <pointsize>7</pointsize>
+       <italic>false</italic>
+       <underline>true</underline>
+       <strikeout>false</strikeout>
+      </font>
+     </property>
+     <property name="text">
+      <string>He olvidado mi contraseña</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>

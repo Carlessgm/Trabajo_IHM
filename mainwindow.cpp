@@ -7,6 +7,7 @@
 #include "pantallaranking.h"
 #include "pantallapartidas.h"
 #include "dlgsegundojugador.h"
+#include "pantallarecuperarclave.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -50,7 +51,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(editProfileAction, &QAction::triggered, this, &MainWindow::showPantallaPerfil);
     connect(darkModeAction, &QAction::triggered, this, &MainWindow::toggleDarkMode);
 
-
     // Conectar la acción de 2 jugadores
     //connect(twoPlayersAction, &QAction::triggered, this, &MainWindow::showPantallaJuegoDosJugadores);
 
@@ -90,6 +90,8 @@ void MainWindow::showPantallaInicio()
         // Cambiar a la pantalla de juego de 1 jugador por defecto
         showPantallaJuego();
     });
+    connect(pantallaInicio, &PantallaInicio::forgotPasswordRequested, this, &MainWindow::showPantallaRecuperarClave);
+
 }
 
 void MainWindow::showPantallaJuego()
@@ -201,4 +203,15 @@ void MainWindow::toggleDarkMode()
         }
         isDarkMode = false;
     }
+}
+
+void MainWindow::showPantallaRecuperarClave()
+{
+    if (currentWidget) {
+        delete currentWidget;
+        currentWidget = nullptr;
+    }
+    auto *pant = new PantallaRecuperarClave(this);
+    currentWidget = pant;
+    setCentralWidget(currentWidget);
 }

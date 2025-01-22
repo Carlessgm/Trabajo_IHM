@@ -20,10 +20,10 @@ public:
 private slots:
     void onbotonIniciarSesion_clicked();
     void onbotonRegistrar_clicked();
-
+    void on_botonOlvideContrasena_clicked();
 signals:
     void loginSuccessful(Player* user);
-
+    void forgotPasswordRequested();
 
 private:
     Ui::PantallaInicio *ui;
