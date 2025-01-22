@@ -184,8 +184,8 @@ void MainWindow::toggleDarkMode()
         QFile file(":/estilos/estilos_oscuro.qss");
         if (file.open(QFile::ReadOnly)) {
             QString darkStyle = QLatin1String(file.readAll());
-            qApp->setStyleSheet("");
-            qApp->setStyleSheet(darkStyle);
+            setStyleSheet("");
+            setStyleSheet(darkStyle);
             file.close();
         }
         isDarkMode = true;
@@ -194,8 +194,8 @@ void MainWindow::toggleDarkMode()
         QFile file(":/estilos/estilos.qss");
         if (file.open(QFile::ReadOnly)) {
             QString lightStyle = QLatin1String(file.readAll());
-            qApp->setStyleSheet("");
-            qApp->setStyleSheet(lightStyle);
+            setStyleSheet("");
+            setStyleSheet(lightStyle);
             file.close();
         } else {
             // Si falla, puedes limpiar completamente el styleSheet
