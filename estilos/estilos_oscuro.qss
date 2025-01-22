@@ -1,0 +1,49 @@
+/* MODO OSCURO */
+
+/* Fondo de la ventana principal */
+QMainWindow {
+    background-color: #333333;
+}
+
+/* Si quieres que PantallaRegistro u otras pantallas tengan fondo oscuro */
+PantallaRegistro {
+    background-color: #222222;
+}
+
+/* QLineEdit con validaciones */
+QLineEdit[Valido = 'false']{
+    border-color: #ff0000;
+    background-color: #ffcccc;
+}
+
+QLineEdit[Valido = 'true']{
+    border-color: #cccccc;
+    background-color: #444444;
+}
+
+/* Etiquetas en color claro */
+QLabel {
+    color: #f0f0f0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Botones con fondo oscuro */
+QPushButton {
+    background-color: #444444;
+    border: 2px solid #646464;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 16px;
+    color: #cccccc;
+}
+
+QPushButton:hover {
+    background-color: #666666;
+    color: #ffffff;
+}
+
+/* MessageBox en tono oscuro */
+QMessageBox {
+    background-color: #444444;
+}

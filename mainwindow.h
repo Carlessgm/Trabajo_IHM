@@ -30,11 +30,12 @@ private slots:
     void showPantallaPartidas();
     void showPantallaJuegoDosJugadores();
     void showPantallaPerfil();
-
+    void toggleDarkMode();
 
 private:
     Ui::MainWindow *ui;
     QWidget *currentWidget; // Puntero al widget actual
     Player *currentUser;  // Guardamos el usuario actualmente logueado
+    bool isDarkMode = false;
 };
 #endif // MAINWINDOW_H

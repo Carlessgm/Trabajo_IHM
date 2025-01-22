@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     QAction *rankingAction = new QAction("Mostrar Ranking", this);
     QAction *partidasAction = new QAction("Partidas Jugadas", this);
     QAction *editProfileAction = new QAction("Editar Perfil", this);
+    QAction *darkModeAction = new QAction(QIcon(":/imagenes/moon.png"), "Modo Oscuro", this);
 
 
     // *** NUEVA ACCIÓN *** para 2 jugadores:
@@ -31,6 +32,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolBar->addAction(rankingAction);
     ui->toolBar->addAction(partidasAction);
     ui->toolBar->addAction(editProfileAction);
+    ui->toolBar->addAction(darkModeAction);
+
     // Añadimos la acción de 2 jugadores
    // ui->toolBar->addAction(twoPlayersAction);
 
@@ -45,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(rankingAction, &QAction::triggered, this, &MainWindow::showPantallaRanking);
     connect(partidasAction, &QAction::triggered, this, &MainWindow::showPantallaPartidas);
     connect(editProfileAction, &QAction::triggered, this, &MainWindow::showPantallaPerfil);
+    connect(darkModeAction, &QAction::triggered, this, &MainWindow::toggleDarkMode);
 
 
     // Conectar la acción de 2 jugadores
@@ -169,4 +173,32 @@ void MainWindow::showPantallaPerfil()
     }
     currentWidget = new PantallaPerfil(currentUser, this);
     setCentralWidget(currentWidget);
+}
+
+void MainWindow::toggleDarkMode()
+{
+    if (!isDarkMode) {
+        // Cargar la hoja de estilo OSCURA
+        QFile file(":/estilos/estilos_oscuro.qss");
+        if (file.open(QFile::ReadOnly)) {
+            QString darkStyle = QLatin1String(file.readAll());
+            qApp->setStyleSheet("");
+            qApp->setStyleSheet(darkStyle);
+            file.close();
+        }
+        isDarkMode = true;
+    } else {
+        // Regresar a la hoja de estilo CLARA
+        QFile file(":/estilos/estilos.qss");
+        if (file.open(QFile::ReadOnly)) {
+            QString lightStyle = QLatin1String(file.readAll());
+            qApp->setStyleSheet("");
+            qApp->setStyleSheet(lightStyle);
+            file.close();
+        } else {
+            // Si falla, puedes limpiar completamente el styleSheet
+            qApp->setStyleSheet("");
+        }
+        isDarkMode = false;
+    }
 }
