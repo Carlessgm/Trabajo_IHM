@@ -40,7 +40,6 @@ PantallaPartidas::~PantallaPartidas()
 void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fechaFinal, const QString &tipo)
 {
     QList<Partida*> partidas;
-
     // Obtener instancia de Connect4
     Connect4 *connect4 = nullptr;
     try {
@@ -50,18 +49,15 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
         tableModel->setPartidas(partidas);
         return;
     }
-
     if (!connect4) {
         qCritical() << "Connect4::getInstance() devolvió un puntero nulo.";
         tableModel->setPartidas(partidas);
         return;
     }
-
     // Obtener todos los jugadores
     QList<Player*> jugadores = connect4->getRanking();
     for (Player* jugador : jugadores) {
-        if (!jugador) continue;  // Evitar punteros nulos
-
+        if (!jugador) continue; // Evitar punteros nulos
         // Obtener rondas para cada jugador
         QList<Round*> rounds;
         try {
@@ -73,24 +69,20 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
             qCritical() << "Error desconocido al obtener las rondas para el jugador:" << jugador->getNickName();
             continue;
         }
-
         for (Round* round : rounds) {
             if (!round) {
                 qWarning() << "Ronda nula encontrada. Saltando.";
                 continue;
             }
-
             if (round->getTimestamp().date() < fechaInicial || round->getTimestamp().date() > fechaFinal) {
                 continue;
             }
-
             Player *winner = round->getWinner();
             Player *loser = round->getLoser();
             if (!winner || !loser) {
                 qWarning() << "Datos incompletos en la ronda: ganador o perdedor nulo.";
                 continue;
             }
-
             partidas.append(new Partida(
                 round->getTimestamp().toString("yyyy-MM-dd"),
                 winner->getNickName(),
@@ -100,15 +92,16 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
                 ));
         }
     }
-
-
     // Aplicar filtro
     QList<Partida*> partidasFiltradas;
-
+    for (Partida* partida : partidas) {
+        if (tipo == "Todas las partidas") {
+            partidasFiltradas.append(partida);
+        }
+    }
     // Actualizar el modelo con las partidas filtradas
     tableModel->setPartidas(partidasFiltradas);
 }
-
 
 
 void PantallaPartidas::aplicarFiltro()
