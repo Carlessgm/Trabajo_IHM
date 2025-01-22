@@ -22,7 +22,6 @@ PantallaRanking::PantallaRanking(QWidget *parent)
 
     // COnfiguración TableView
     listModelP->setPersonas(personas);
-
     ui->tableView->setModel(listModelP);
     ui->tableView->horizontalHeader()->setStretchLastSection(true); // Ajustar columnas
     ui->tableView->verticalHeader()->setDefaultSectionSize(50);     // Ajustar altura de filas para avatares

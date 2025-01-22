@@ -62,6 +62,7 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
     }
     // Obtener todos los jugadores
     if(persona == "Todos"){
+        QList<QDateTime> tiempos;
         QList<Player*> jugadores = connect4->getRanking();
         for (Player* jugador : jugadores) {
             if (!jugador) continue; // Evitar punteros nulos
@@ -76,28 +77,32 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
                 qCritical() << "Error desconocido al obtener las rondas para el jugador:" << jugador->getNickName();
                 continue;
             }
+
             for (Round* round : rounds) {
                 if (!round) {
                     qWarning() << "Ronda nula encontrada. Saltando.";
                     continue;
                 }
-                if (round->getTimestamp().date() < fechaInicial || round->getTimestamp().date() > fechaFinal) {
+                if ((round->getTimestamp().date() < fechaInicial || round->getTimestamp().date() > fechaFinal) || tiempos.contains(round->getTimestamp())) {
                     continue;
                 }
+                tiempos.append(round->getTimestamp());
                 Player *winner = round->getWinner();
                 Player *loser = round->getLoser();
                 if (!winner || !loser) {
                     qWarning() << "Datos incompletos en la ronda: ganador o perdedor nulo.";
                     continue;
                 }
-
-                partidas.append(new Partida(
-                    round->getTimestamp().toString("yyyy-MM-dd"),
+                Partida * partida_nueva = new Partida(
+                    round->getTimestamp().toString("yyyy-MM-dd hh:mm:ss"),
                     winner->getNickName(),
                     winner->getAvatar(),
                     loser->getNickName(),
                     loser->getAvatar()
-                    ));
+                    );
+                partidas.append(partida_nueva);
+
+
             }
         }
     }else{
@@ -120,7 +125,7 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
             }
 
             partidas.append(new Partida(
-                round->getTimestamp().toString("yyyy-MM-dd"),
+                round->getTimestamp().toString("yyyy-MM-dd hh:mm:ss"),
                 winner->getNickName(),
                 winner->getAvatar(),
                 loser->getNickName(),
