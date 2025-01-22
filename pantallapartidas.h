@@ -22,7 +22,7 @@ private:
     PartidaTableModel *tableModel; // Modelo para manejar las partidas en la tabla
 
     // Métodos
-    void cargarPartidas(const QDate &fechaInicial, const QDate &fechaFinal, const QString &tipo); // Carga las partidas según el rango de fechas
+    void cargarPartidas(const QDate &fechaInicial, const QDate &fechaFinal, const int &tipo, const QString &persona); // Carga las partidas según el rango de fechas
     void aplicarFiltro(); // Aplica el filtro según las fechas seleccionadas
 };
 

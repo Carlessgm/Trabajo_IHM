@@ -19,10 +19,16 @@ PantallaPartidas::PantallaPartidas(QWidget *parent)
     ui->comboBox->addItem("Partidas ganadas");
     ui->comboBox->addItem("Partidas perdidas");
 
+    ui->comboBox_personas->addItem("Todos");
+    QList<Player *> jugadores = Connect4::getInstance().getRanking();
+    for(int i = 0; i < jugadores.length(); i++){
+        ui->comboBox_personas->addItem(jugadores[i]->getNickName());
+    }
     // Conectar señales para los filtros
     connect(ui->dateEdit_inicial, &QDateEdit::dateChanged, this, &PantallaPartidas::aplicarFiltro);
     connect(ui->dateEdit_final, &QDateEdit::dateChanged, this, &PantallaPartidas::aplicarFiltro);
     connect(ui->comboBox, &QComboBox::currentTextChanged, this, &PantallaPartidas::aplicarFiltro);
+    connect(ui->comboBox_personas, &QComboBox::currentTextChanged, this, &PantallaPartidas::aplicarFiltro);
 
     // Inicializar las fechas con valores predeterminados
     ui->dateEdit_inicial->setDate(QDate(2000, 1, 1));
@@ -37,7 +43,7 @@ PantallaPartidas::~PantallaPartidas()
     delete ui;
 }
 
-void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fechaFinal, const QString &tipo)
+void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fechaFinal, const int &tipo, const QString &persona)
 {
     QList<Partida*> partidas;
     // Obtener instancia de Connect4
@@ -55,20 +61,49 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
         return;
     }
     // Obtener todos los jugadores
-    QList<Player*> jugadores = connect4->getRanking();
-    for (Player* jugador : jugadores) {
-        if (!jugador) continue; // Evitar punteros nulos
-        // Obtener rondas para cada jugador
-        QList<Round*> rounds;
-        try {
-            rounds = connect4->getRoundsForPlayer(jugador);
-        } catch (const std::exception &e) {
-            qCritical() << "Excepción al obtener las rondas para el jugador:" << jugador->getNickName() << " - " << e.what();
-            continue;
-        } catch (...) {
-            qCritical() << "Error desconocido al obtener las rondas para el jugador:" << jugador->getNickName();
-            continue;
+    if(persona == "Todos"){
+        QList<Player*> jugadores = connect4->getRanking();
+        for (Player* jugador : jugadores) {
+            if (!jugador) continue; // Evitar punteros nulos
+            // Obtener rondas para cada jugador
+            QList<Round*> rounds;
+            try {
+                rounds = connect4->getRoundsForPlayer(jugador);
+            } catch (const std::exception &e) {
+                qCritical() << "Excepción al obtener las rondas para el jugador:" << jugador->getNickName() << " - " << e.what();
+                continue;
+            } catch (...) {
+                qCritical() << "Error desconocido al obtener las rondas para el jugador:" << jugador->getNickName();
+                continue;
+            }
+            for (Round* round : rounds) {
+                if (!round) {
+                    qWarning() << "Ronda nula encontrada. Saltando.";
+                    continue;
+                }
+                if (round->getTimestamp().date() < fechaInicial || round->getTimestamp().date() > fechaFinal) {
+                    continue;
+                }
+                Player *winner = round->getWinner();
+                Player *loser = round->getLoser();
+                if (!winner || !loser) {
+                    qWarning() << "Datos incompletos en la ronda: ganador o perdedor nulo.";
+                    continue;
+                }
+
+                partidas.append(new Partida(
+                    round->getTimestamp().toString("yyyy-MM-dd"),
+                    winner->getNickName(),
+                    winner->getAvatar(),
+                    loser->getNickName(),
+                    loser->getAvatar()
+                    ));
+            }
         }
+    }else{
+        Player *jugador_sel = Connect4::getInstance().getPlayer(persona);
+        QList<Round*> rounds;
+        rounds = Connect4::getInstance().getRoundsForPlayer(jugador_sel);
         for (Round* round : rounds) {
             if (!round) {
                 qWarning() << "Ronda nula encontrada. Saltando.";
@@ -83,6 +118,7 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
                 qWarning() << "Datos incompletos en la ronda: ganador o perdedor nulo.";
                 continue;
             }
+
             partidas.append(new Partida(
                 round->getTimestamp().toString("yyyy-MM-dd"),
                 winner->getNickName(),
@@ -91,13 +127,29 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
                 loser->getAvatar()
                 ));
         }
+
     }
     // Aplicar filtro
     QList<Partida*> partidasFiltradas;
     for (Partida* partida : partidas) {
-        if (tipo == "Todas las partidas") {
+        switch (tipo) {
+        case 0:
             partidasFiltradas.append(partida);
+            break;
+        case 1:
+            if(partida->ganador == persona){
+                partidasFiltradas.append(partida);
+            }
+            break;
+        case 2:
+            if(partida->perdedor == persona){
+                partidasFiltradas.append(partida);
+            }
+            break;
+        default:
+            break;
         }
+
     }
     // Actualizar el modelo con las partidas filtradas
     tableModel->setPartidas(partidasFiltradas);
@@ -106,9 +158,13 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
 
 void PantallaPartidas::aplicarFiltro()
 {
+    if(ui->comboBox_personas->currentIndex() == 0){
+        ui->comboBox->setCurrentIndex(0);
+    }
     QDate fechaInicial = ui->dateEdit_inicial->date();
     QDate fechaFinal = ui->dateEdit_final->date();
-    QString tipo = ui->comboBox->currentText();
+    int tipo = ui->comboBox->currentIndex();
+    QString persona = ui->comboBox_personas->currentText();
 
-    cargarPartidas(fechaInicial, fechaFinal, tipo);
+    cargarPartidas(fechaInicial, fechaFinal, tipo, persona);
 }
