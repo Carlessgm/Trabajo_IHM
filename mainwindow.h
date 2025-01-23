@@ -38,6 +38,7 @@ private:
     Ui::MainWindow *ui;
     QWidget *currentWidget; // Puntero al widget actual
     Player *currentUser;  // Guardamos el usuario actualmente logueado
+    Player *User2;
     bool isDarkMode = false;
 };
 #endif // MAINWINDOW_H

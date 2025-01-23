@@ -1,7 +1,7 @@
 #include "mainwindow.h"
+#include "cerrarsesion.h"
 #include "pantallaperfil.h"
 #include "ui_mainwindow.h"
-
 #include "pantallainicio.h"
 #include "pantallajuego.h"
 #include "pantallaranking.h"
@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , currentWidget(nullptr)
+    , User2(nullptr)
 {
     ui->setupUi(this);
 
@@ -106,8 +107,10 @@ void MainWindow::showPantallaJuego()
         delete currentWidget;
         currentWidget = nullptr;
     }
+
     // PantallaJuego sin parámetros -> Modo contra CPU
-    currentWidget = new PantallaJuego(this, currentUser);
+    auto pantallajuego = new PantallaJuego(this, currentUser);
+    currentWidget = pantallajuego;
     setCentralWidget(currentWidget);
 }
 
@@ -240,17 +243,17 @@ void MainWindow::logout()
         QMessageBox::information(this, "Cerrar Sesión", "Ningún usuario está logueado actualmente.");
         return;
     }
-
-    // 1) Dejar el puntero a null
-    currentUser = nullptr;
-
+    qDebug() << User2;
+    Cerrarsesion crs(this, currentUser, User2);
     // 2) Deshabilitar las acciones que requieren estar logueado
     //    (Por ejemplo, la acción “Mostrar Pantalla Juego” y “Editar Perfil”)
-    ui->toolBar->actions()[1]->setEnabled(false); // "Mostrar Pantalla Juego"
-    ui->toolBar->actions()[4]->setEnabled(false); // "Editar Perfil" (ajusta si cambia el orden)
-    ui->toolBar->actions()[6]->setEnabled(false); // "Cerrar sesión"
+    if(!currentUser && !User2){
+        ui->toolBar->actions()[1]->setEnabled(false); // "Mostrar Pantalla Juego"
+        ui->toolBar->actions()[4]->setEnabled(false); // "Editar Perfil" (ajusta si cambia el orden)
+        ui->toolBar->actions()[6]->setEnabled(false); // "Cerrar sesión"
+    }
     // 3) Mostrar mensaje
-    QMessageBox::information(this, "Cerrar Sesión", "La sesión se ha cerrado con éxito.");
+
 
     // 4) Volver a la pantalla de inicio
     showPantallaInicio();
