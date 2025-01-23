@@ -16,39 +16,6 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="6" column="0" colspan="2">
-      <widget class="QComboBox" name="comboBox_personas"/>
-     </item>
-     <item row="7" column="1">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Hasta:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="0" colspan="2">
-      <widget class="QTableView" name="tableView"/>
-     </item>
-     <item row="8" column="0">
-      <widget class="QDateEdit" name="dateEdit_inicial">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="dateTime">
-        <datetime>
-         <hour>22</hour>
-         <minute>0</minute>
-         <second>0</second>
-         <year>2000</year>
-         <month>1</month>
-         <day>1</day>
-        </datetime>
-       </property>
-      </widget>
-     </item>
      <item row="5" column="0">
       <widget class="QLabel" name="label_persona">
        <property name="text">
@@ -56,16 +23,6 @@
        </property>
        <property name="alignment">
         <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft</set>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="1">
-      <widget class="QDateEdit" name="dateEdit_final"/>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Desde:</string>
        </property>
       </widget>
      </item>
@@ -79,6 +36,46 @@
        </property>
       </widget>
      </item>
+     <item row="7" column="1">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Hasta:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Desde:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0" colspan="2">
+      <widget class="QComboBox" name="comboBox_personas"/>
+     </item>
+     <item row="8" column="1">
+      <widget class="QDateEdit" name="dateEdit_final"/>
+     </item>
+     <item row="8" column="0">
+      <widget class="QDateEdit" name="dateEdit_inicial">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="dateTime">
+        <datetime>
+         <hour>21</hour>
+         <minute>0</minute>
+         <second>0</second>
+         <year>2000</year>
+         <month>1</month>
+         <day>1</day>
+        </datetime>
+       </property>
+      </widget>
+     </item>
      <item row="4" column="0" colspan="2">
       <widget class="QComboBox" name="comboBox">
        <property name="sizePolicy">
@@ -87,6 +84,31 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+      </widget>
+     </item>
+     <item row="9" column="0" colspan="2">
+      <widget class="QScrollArea" name="scrollArea">
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="widgetResizable">
+        <bool>true</bool>
+       </property>
+       <widget class="QWidget" name="scrollAreaWidgetContents">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>-20</y>
+          <width>357</width>
+          <height>107</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0">
+          <widget class="QTableView" name="tableView"/>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </item>
     </layout>

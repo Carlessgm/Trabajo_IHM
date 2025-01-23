@@ -2,6 +2,17 @@
 #include "ui_pantallapartidas.h"
 #include "connect4.h"
 
+#include <QtCore>
+#include <QtGui>
+#include <QtCharts/QChartView>
+#include <QtCharts/QBarSeries>
+#include <QtCharts/QBarSet>
+#include <QtCharts/QBarCategoryAxis>
+#include <QtCharts/QValueAxis>
+#include <QtCharts>
+#include <QtWidgets>
+
+
 PantallaPartidas::PantallaPartidas(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::PantallaPartidas)
@@ -40,6 +51,8 @@ PantallaPartidas::PantallaPartidas(QWidget *parent)
 
     // Cargar partidas con el filtro inicial
     aplicarFiltro();
+
+    crearGraficoBarras();
 }
 
 PantallaPartidas::~PantallaPartidas()
@@ -176,4 +189,46 @@ void PantallaPartidas::aplicarFiltro()
     QString persona = ui->comboBox_personas->currentText();
 
     cargarPartidas(fechaInicial, fechaFinal, tipo, persona);
+}
+
+void PantallaPartidas::crearGraficoBarras()
+{
+    // Crear un conjunto de datos de ejemplo
+    QBarSet *setGanadas = new QBarSet("Ganadas");
+    QBarSet *setPerdidas = new QBarSet("Perdidas");
+
+    // Añadir datos ficticios
+    *setGanadas << 5 << 7 << 3 << 4 << 6;
+    *setPerdidas << 2 << 3 << 4 << 5 << 1;
+
+    // Crear la serie de barras
+    QBarSeries *series = new QBarSeries();
+    series->append(setGanadas);
+    series->append(setPerdidas);
+
+    // Crear el gráfico
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle("Estadísticas de Partidas");
+    chart->setAnimationOptions(QChart::SeriesAnimations);
+
+    // Añadir categorías en el eje X
+    QStringList categories {"Jugador1", "Jugador2", "Jugador3", "Jugador4", "Jugador5"};
+    QBarCategoryAxis *axisX = new QBarCategoryAxis();
+    axisX->append(categories);
+    chart->addAxis(axisX, Qt::AlignBottom);
+    series->attachAxis(axisX);
+
+    // Configurar el eje Y
+    QValueAxis *axisY = new QValueAxis();
+    axisY->setRange(0, 10);
+    chart->addAxis(axisY, Qt::AlignLeft);
+    series->attachAxis(axisY);
+
+    // Crear la vista del gráfico
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+
+    // Agregar el gráfico al layout de la interfaz
+    ui->scrollAreaWidgetContents->layout()->addWidget(chartView);
 }
