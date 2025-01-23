@@ -272,11 +272,11 @@ void MainWindow::logout()
         ui->toolBar->actions()[1]->setEnabled(false); // "Mostrar Pantalla Juego"
         ui->toolBar->actions()[4]->setEnabled(false); // "Editar Perfil" (ajusta si cambia el orden)
         ui->toolBar->actions()[6]->setEnabled(false); // "Cerrar sesión"
-        showPantallaInicio();
+
     }
     // 3) Mostrar mensaje
 
 
     // 4) Volver a la pantalla de inicio
-
+    showPantallaInicio();
 }
