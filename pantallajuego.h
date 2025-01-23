@@ -40,6 +40,7 @@ private:
     bool playAgainstCPU;
     bool twoPlayersMode;
     bool playing;
+    int cant_moves;
 
     // Para CPU
     QTimer *cpuTimer;

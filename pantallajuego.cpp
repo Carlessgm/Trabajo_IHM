@@ -30,6 +30,7 @@ PantallaJuego::PantallaJuego(QWidget *parent, Player* p)
     , p1Wins(0)
     , p2Wins(0)
     , totalGames(0)
+    , cant_moves(0)
 {
     ui->setupUi(this);
 
@@ -173,82 +174,54 @@ void PantallaJuego::mousePressEvent(QMouseEvent *event)
         if (column >= 0 && column < cols) {
             int row;
             if (dropDisc(column, row)) {
+                cant_moves ++;
                 update();
-                if (checkWin(row, column)) {
-                    // Alguien gana
-                    QString winnerName;
-                    if (playAgainstCPU) {
-                        winnerName = (currentPlayer == 1) ? p1->getNickName() : "CPU";
-                        p1->addPoints(5);
-                    } else {
-                        winnerName = (currentPlayer == 1) ? p1->getNickName()
-                                                          : p2->getNickName();
+                if(cant_moves != rows*cols){
+                    if (checkWin(row, column)) {
+                        // Alguien gana
+                        QString winnerName;
+                        if (playAgainstCPU) {
+                            winnerName = (currentPlayer == 1) ? p1->getNickName() : "CPU";
+                            p1->addPoints(5);
+                        } else {
+                            winnerName = (currentPlayer == 1) ? p1->getNickName()
+                                                              : p2->getNickName();
+                        }
+
+                        // Registrar en BD si es 2 jugadores
+                        if (twoPlayersMode && p1 && p2) {
+                            Player* winner = (currentPlayer == 1) ? p1 : p2;
+                            Player* loser  = (currentPlayer == 1) ? p2 : p1;
+
+                            // Sumar puntos
+                            winner->addPoints(10);
+                            Connect4::getInstance().registerRound(QDateTime::currentDateTime(),
+                                                                  winner, loser);
+                        }
+
+                        // Actualizar marcadores
+                        totalGames++;
+                        if (currentPlayer == 1)
+                            p1Wins++;
+                        else
+                            p2Wins++;
+
+                        mostrarMarcadorFinal(winnerName);
+                        return;
                     }
-
-                    // Registrar en BD si es 2 jugadores
-                    if (twoPlayersMode && p1 && p2) {
-                        Player* winner = (currentPlayer == 1) ? p1 : p2;
-                        Player* loser  = (currentPlayer == 1) ? p2 : p1;
-
-                        // Sumar puntos
-                        winner->addPoints(10);
-                        Connect4::getInstance().registerRound(QDateTime::currentDateTime(),
-                                                              winner, loser);
-                    }
-
-                    // Actualizar marcadores
-                    totalGames++;
-                    if (currentPlayer == 1)
-                        p1Wins++;
-                    else
-                        p2Wins++;
-
-                    mostrarMarcadorFinal(winnerName);
-                    // Mostrar diálogo final: ¿Jugar otra o salir?
-                    // (ver más abajo)
-                    /*
-                    QDialog finalDialog(this);
-                    finalDialog.setWindowTitle("Fin de la Partida");
-                    QVBoxLayout* mainLay = new QVBoxLayout(&finalDialog);
-                    QLabel* lbl = new QLabel(
-                        QString("¡" + winnerName+" ha ganado!"),
-                        &finalDialog
-                    );
-                    mainLay->addWidget(lbl);
-
-                    QHBoxLayout* btnLay = new QHBoxLayout;
-                    QPushButton* btnAgain = new QPushButton("Jugar de nuevo", &finalDialog);
-                    QPushButton* btnExit = new QPushButton("Salir", &finalDialog);
-                    btnLay->addWidget(btnAgain);
-                    btnLay->addWidget(btnExit);
-                    mainLay->addLayout(btnLay);
-
-                    // Conexiones
-                    connect(btnAgain, &QPushButton::clicked, [&]() {
-                        finalDialog.accept();
-                    });
-                    connect(btnExit, &QPushButton::clicked, [&]() {
-                        finalDialog.reject();
-                    });
-
-                    if (finalDialog.exec() == QDialog::Accepted) {
-                        // Jugar de nuevo
-                        resetBoard(true);
-                    } else {
-                        // Salir => antes de cerrar, mostramos el marcador final
-                        mostrarMarcadorFinal();
-                        //close();
-                    }
-                    */
-                    return;
                 }
-
+                else{
+                    totalGames++;
+                    playing = false;
+                    mostrarMarcadorFinal("");
+                }
                 // Cambiar turno
                 currentPlayer = (currentPlayer == 1) ? 2 : 1;
                 if (playAgainstCPU && currentPlayer == 2) {
                     cpuTimer->start(500);
                 }
             } else {
+                qDebug() << cant_moves;
                 QMessageBox::warning(this, "Columna llena", "Columna llena. Elige otra.");
             }
         }
@@ -331,7 +304,7 @@ void PantallaJuego::cpuMove()
     do {
         column = std::rand() % cols;
     } while (!dropDisc(column, row));
-
+    cant_moves ++;
     update();
     if (checkWin(row, column)) {
         // CPU gana
@@ -373,29 +346,41 @@ void PantallaJuego::mostrarMarcadorFinal(QString ganador)
     QVBoxLayout* mainLay = new QVBoxLayout(&scoreDialog);
     QString info;
 
-    // 2 jugadores
-    if (twoPlayersMode && p1 && p2) {
-        info = QString("El ganador ha sido %6\n"
+    if(ganador == ""){
+        info = QString("Ha habido un empate\n"
                        "Partidas jugadas: %1\n"
                        "%2 ha ganado %3 veces\n"
                        "%4 ha ganado %5 veces\n")
-                .arg(totalGames)
-                .arg(p1->getNickName())
-                .arg(p1Wins)
-                .arg(p2->getNickName())
-                .arg(p2Wins)
-                .arg(ganador);
-    } else {
-        // vs CPU => p1Wins es "tú", p2Wins es "CPU"
-        info = QString("El ganador ha sido %5\n"
-                       "Partidas jugadas: %1\n"
-                       "%4 has ganado: %2\n"
-                       "CPU ha ganado: %3\n")
-                .arg(totalGames)
-                .arg(p1Wins)
-                .arg(p2Wins)
-                .arg(p1->getNickName())
-                .arg(ganador);
+                   .arg(totalGames)
+                   .arg(p1->getNickName())
+                   .arg(p1Wins)
+                   .arg(p2->getNickName())
+                   .arg(p2Wins)
+                   .arg(ganador);
+    }else{
+        if (twoPlayersMode && p1 && p2) {
+            info = QString("El ganador ha sido %6\n"
+                           "Partidas jugadas: %1\n"
+                           "%2 ha ganado %3 veces\n"
+                           "%4 ha ganado %5 veces\n")
+                    .arg(totalGames)
+                    .arg(p1->getNickName())
+                    .arg(p1Wins)
+                    .arg(p2->getNickName())
+                    .arg(p2Wins)
+                    .arg(ganador);
+        } else {
+            // vs CPU => p1Wins es "tú", p2Wins es "CPU"
+            info = QString("El ganador ha sido %5\n"
+                           "Partidas jugadas: %1\n"
+                           "%4 has ganado: %2\n"
+                           "CPU ha ganado: %3\n")
+                    .arg(totalGames)
+                    .arg(p1Wins)
+                    .arg(p2Wins)
+                    .arg(p1->getNickName())
+                    .arg(ganador);
+        }
     }
     QLabel* lbl = new QLabel(info, &scoreDialog);
     mainLay->addWidget(lbl);
