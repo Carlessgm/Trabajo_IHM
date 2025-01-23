@@ -14,7 +14,11 @@ PantallaPartidas::PantallaPartidas(QWidget *parent)
     ui->tableView->horizontalHeader()->setStretchLastSection(true);
     ui->tableView->verticalHeader()->setDefaultSectionSize(50);
 
-    // Configurar opciones en el comboBox existente
+    ui->tableView->setColumnWidth(0, 150); // Columna "Fecha"
+    ui->tableView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch); // Columna "Ganador"
+    ui->tableView->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch); // Columna "Perdedor"
+
+    // Configurar opciones en el comboBox
     ui->comboBox->addItem("Todas las partidas");
     ui->comboBox->addItem("Partidas ganadas");
     ui->comboBox->addItem("Partidas perdidas");
