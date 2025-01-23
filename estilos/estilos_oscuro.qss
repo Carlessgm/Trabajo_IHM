@@ -10,15 +10,14 @@ PantallaRegistro {
     background-color: #222222;
 }
 
-/* QLineEdit con validaciones */
-QLineEdit[Valido = 'false']{
-    border-color: #ff0000;
-    background-color: #ffcccc;
+QLineEdit[Valido = 'false'] {
+    border-color: #ff8080; /* Rojo suave */
+    background-color: #ffe6e6; /* Fondo rojo claro */
 }
 
-QLineEdit[Valido = 'true']{
-    border-color: #cccccc;
-    background-color: #444444;
+QLineEdit[Valido = 'true'] {
+    border-color: #80c080; /* Verde suave */
+    background-color: #e6ffe6; /* Fondo verde claro */
 }
 
 /* Etiquetas en color claro */

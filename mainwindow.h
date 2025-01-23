@@ -32,6 +32,7 @@ private slots:
     void showPantallaPerfil();
     void toggleDarkMode();
     void showPantallaRecuperarClave();
+    void logout();
 
 private:
     Ui::MainWindow *ui;

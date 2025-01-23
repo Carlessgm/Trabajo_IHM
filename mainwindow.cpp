@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     QAction *rankingAction = new QAction("Mostrar Ranking", this);
     QAction *partidasAction = new QAction("Partidas Jugadas", this);
     QAction *editProfileAction = new QAction("Editar Perfil", this);
+    QAction *logoutAction = new QAction("Cerrar Sesión", this);
     QAction *darkModeAction = new QAction(QIcon(":/imagenes/moon.png"), "Modo Oscuro", this);
 
 
@@ -34,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolBar->addAction(partidasAction);
     ui->toolBar->addAction(editProfileAction);
     ui->toolBar->addAction(darkModeAction);
+    ui->toolBar->addAction(logoutAction);
+
 
     // Asignamos al boton de cambio modo el nombre darkModeAction para poder cambiar su icono posteriormente
     darkModeAction->setObjectName("darkModeAction");
@@ -41,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Deshabilitar botón de "Mostrar Pantalla Juego" inicialmente
     gameAction->setEnabled(false);
     editProfileAction->setEnabled(false);
+    logoutAction->setEnabled(false);
     //twoPlayersAction->setEnabled(false);
 
     // Conectar acciones con slots
@@ -49,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(rankingAction, &QAction::triggered, this, &MainWindow::showPantallaRanking);
     connect(partidasAction, &QAction::triggered, this, &MainWindow::showPantallaPartidas);
     connect(editProfileAction, &QAction::triggered, this, &MainWindow::showPantallaPerfil);
+    connect(logoutAction, &QAction::triggered, this, &MainWindow::logout);
     connect(darkModeAction, &QAction::triggered, this, &MainWindow::toggleDarkMode);
 
     // Conectar la acción de 2 jugadores
@@ -86,6 +91,7 @@ void MainWindow::showPantallaInicio()
         ui->toolBar->actions()[1]->setEnabled(true);
         // Habilitar "Jugar vs. 2º Jugador" (está en la posición 4 del toolbar, index 4)
         ui->toolBar->actions()[4]->setEnabled(true);
+        ui->toolBar->actions()[6]->setEnabled(true);
 
         // Cambiar a la pantalla de juego de 1 jugador por defecto
         showPantallaJuego();
@@ -225,4 +231,27 @@ void MainWindow::showPantallaRecuperarClave()
     auto *pant = new PantallaRecuperarClave(this);
     currentWidget = pant;
     setCentralWidget(currentWidget);
+}
+
+void MainWindow::logout()
+{
+    // Si no hay usuario logueado, avisamos
+    if (!currentUser) {
+        QMessageBox::information(this, "Cerrar Sesión", "Ningún usuario está logueado actualmente.");
+        return;
+    }
+
+    // 1) Dejar el puntero a null
+    currentUser = nullptr;
+
+    // 2) Deshabilitar las acciones que requieren estar logueado
+    //    (Por ejemplo, la acción “Mostrar Pantalla Juego” y “Editar Perfil”)
+    ui->toolBar->actions()[1]->setEnabled(false); // "Mostrar Pantalla Juego"
+    ui->toolBar->actions()[4]->setEnabled(false); // "Editar Perfil" (ajusta si cambia el orden)
+    ui->toolBar->actions()[6]->setEnabled(false); // "Cerrar sesión"
+    // 3) Mostrar mensaje
+    QMessageBox::information(this, "Cerrar Sesión", "La sesión se ha cerrado con éxito.");
+
+    // 4) Volver a la pantalla de inicio
+    showPantallaInicio();
 }

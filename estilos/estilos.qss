@@ -7,12 +7,14 @@ PantallaRegistro{
 }
 
 
-QLineEdit[Valido = 'false']{
-    border-color: #ff0000; background-color: #ff0000;
+QLineEdit[Valido = 'false'] {
+    border-color: #ff8080; /* Rojo suave */
+    background-color: #ffe6e6; /* Fondo rojo claro */
 }
 
-QLineEdit[Valido = 'true']{
-    border-color: #222222; background-color: #222222;
+QLineEdit[Valido = 'true'] {
+    border-color: #80c080; /* Verde suave */
+    background-color: #e6ffe6; /* Fondo verde claro */
 }
 
 QLabel[aux = 'true']{
