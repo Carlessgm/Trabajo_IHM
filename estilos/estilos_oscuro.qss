@@ -35,6 +35,7 @@ QPushButton {
     border-radius: 4px;
     padding: 6px 12px;
     font-size: 16px;
+    font-family: Arial, sans-serif;
     color: #cccccc;
 }
 
@@ -46,4 +47,54 @@ QPushButton:hover {
 /* MessageBox en tono oscuro */
 QMessageBox {
     background-color: #444444;
+}
+
+QRadioButton::indicator {
+    width: 16px;
+    height: 16px;
+}
+
+QRadioButton::indicator::unchecked {
+    image: url(:/imagenes/ojo_abierto.png);
+}
+
+QRadioButton::indicator::checked {
+    image: url(:/imagenes/ojo_cerrado.png);
+}
+
+/* Estilo general de la toolbar */
+QToolBar {
+    background-color: #444444; /* Fondo oscuro para la barra de herramientas */
+    border: none; /* Sin bordes */
+}
+
+/* Botones habilitados en la toolbar */
+QToolButton {
+    color: #ffffff; /* Texto blanco */
+    background-color: transparent; /* Fondo transparente */
+    border: none; /* Sin bordes */
+    padding: 4px 8px; /* Ajusta el tamaño del botón */
+}
+
+/* Botones deshabilitados en la toolbar */
+QToolButton:disabled {
+    color: #808080;
+}
+
+/* Botones habilitados al pasar el ratón */
+QToolButton:hover {
+    background-color: #666666;
+    color: #ffffff; /* Texto blanco */
+}
+
+/* Botones habilitados al ser presionados */
+QToolButton:pressed {
+    background-color: #555555;
+}
+
+/* Menús desplegables de la toolbar */
+QMenu {
+    background-color: #444444;
+    color: #ffffff;
+    border: 1px solid #666666;
 }

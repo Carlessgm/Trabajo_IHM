@@ -63,3 +63,12 @@ QMessageBox{
     background-color: #d4d4d4;
 }
 
+QToolButton {
+    border: none; /* Sin bordes */
+    padding: 4px 8px; /* Ajusta el tamaño del botón */
+}
+
+QToolButton:hover{
+    background-color: #569EE0;
+    color: #000000;
+}
