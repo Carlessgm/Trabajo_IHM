@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "cerrarsesion.h"
+
 #include "pantallaperfil.h"
 #include "ui_mainwindow.h"
 #include "pantallainicio.h"

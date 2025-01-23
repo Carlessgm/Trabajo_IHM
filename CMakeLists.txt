@@ -42,7 +42,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         dlgsegundojugador.h dlgsegundojugador.cpp
         pantallaperfil.h pantallaperfil.cpp pantallaperfil.ui
         pantallarecuperarclave.h pantallarecuperarclave.cpp pantallarecuperarclave.ui
-        cerrarsesion.h cerrarsesion.cpp
+
     )
 
 # Enlace de las bibliotecas
