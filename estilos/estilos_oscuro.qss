@@ -98,3 +98,8 @@ QMenu {
     color: #ffffff;
     border: 1px solid #666666;
 }
+
+QToolButton#darkModeAction {
+    qproperty-icon: url(:/imagenes/moon.png); /* Ícono de luna para modo claro */
+    border: none;
+}

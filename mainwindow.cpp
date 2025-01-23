@@ -35,8 +35,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolBar->addAction(editProfileAction);
     ui->toolBar->addAction(darkModeAction);
 
-    // Añadimos la acción de 2 jugadores
-   // ui->toolBar->addAction(twoPlayersAction);
+    // Asignamos al boton de cambio modo el nombre darkModeAction para poder cambiar su icono posteriormente
+    darkModeAction->setObjectName("darkModeAction");
 
     // Deshabilitar botón de "Mostrar Pantalla Juego" inicialmente
     gameAction->setEnabled(false);
@@ -184,23 +184,34 @@ void MainWindow::toggleDarkMode()
         QFile file(":/estilos/estilos_oscuro.qss");
         if (file.open(QFile::ReadOnly)) {
             QString darkStyle = QLatin1String(file.readAll());
-            setStyleSheet("");
             setStyleSheet(darkStyle);
             file.close();
         }
+
+        // Cambiar ícono de la acción a "sol"
+        for (QAction* action : ui->toolBar->actions()) {
+            if (action->objectName() == "darkModeAction") {
+                action->setIcon(QIcon(":/imagenes/sun.png"));
+            }
+        }
+
         isDarkMode = true;
     } else {
         // Regresar a la hoja de estilo CLARA
         QFile file(":/estilos/estilos.qss");
         if (file.open(QFile::ReadOnly)) {
             QString lightStyle = QLatin1String(file.readAll());
-            setStyleSheet("");
             setStyleSheet(lightStyle);
             file.close();
-        } else {
-            // Si falla, puedes limpiar completamente el styleSheet
-            qApp->setStyleSheet("");
         }
+
+        // Cambiar ícono de la acción a "luna"
+        for (QAction* action : ui->toolBar->actions()) {
+            if (action->objectName() == "darkModeAction") {
+                action->setIcon(QIcon(":/imagenes/moon.png"));
+            }
+        }
+
         isDarkMode = false;
     }
 }

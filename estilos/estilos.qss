@@ -72,3 +72,8 @@ QToolButton:hover{
     background-color: #569EE0;
     color: #000000;
 }
+
+QToolButton#darkModeAction {
+    qproperty-icon: url(:/imagenes/moon.png); /* Ícono de luna para modo claro */
+    border: none;
+}
