@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , currentWidget(nullptr)
-    , User2(nullptr)
+    ,User2(nullptr)
 {
     ui->setupUi(this);
 
@@ -110,8 +110,14 @@ void MainWindow::showPantallaJuego()
 
     // PantallaJuego sin parámetros -> Modo contra CPU
     auto pantallajuego = new PantallaJuego(this, currentUser);
+    connect(pantallajuego, &PantallaJuego::User2, this, [this](Player* user){
+        if(user){
+            User2 = user;
+        }
+    });
     currentWidget = pantallajuego;
     setCentralWidget(currentWidget);
+    qDebug() << User2;
 }
 
 void MainWindow::showPantallaRanking()
@@ -243,18 +249,34 @@ void MainWindow::logout()
         QMessageBox::information(this, "Cerrar Sesión", "Ningún usuario está logueado actualmente.");
         return;
     }
-    qDebug() << User2;
-    Cerrarsesion crs(this, currentUser, User2);
-    // 2) Deshabilitar las acciones que requieren estar logueado
-    //    (Por ejemplo, la acción “Mostrar Pantalla Juego” y “Editar Perfil”)
-    if(!currentUser && !User2){
+    //Dos jugadores
+    if(currentUser && User2){
+        int jugador_sel = QMessageBox::question(this,"losgout","Usuario a deslogear", currentUser->getNickName(), User2->getNickName());
+        qDebug() << jugador_sel;
+        if(jugador_sel == 1){
+            QMessageBox::information(this, "Logout", "El jugador "+User2->getNickName()+ "se ha deslogueado correctamente");
+            User2 = nullptr;
+
+        }
+        if(jugador_sel == 0){
+            QMessageBox::information(this, "Logout", "El jugador "+currentUser->getNickName()+ "se ha deslogueado correctamente");
+            currentUser = User2;
+
+        }
+    }
+
+    //Un jugador solo
+    else{
+        QMessageBox::information(this, "Logout", "El jugador "+currentUser->getNickName()+ "se ha deslogueado correctamente");
+        currentUser = nullptr;
         ui->toolBar->actions()[1]->setEnabled(false); // "Mostrar Pantalla Juego"
         ui->toolBar->actions()[4]->setEnabled(false); // "Editar Perfil" (ajusta si cambia el orden)
         ui->toolBar->actions()[6]->setEnabled(false); // "Cerrar sesión"
+        showPantallaInicio();
     }
     // 3) Mostrar mensaje
 
 
     // 4) Volver a la pantalla de inicio
-    showPantallaInicio();
+
 }

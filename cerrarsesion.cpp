@@ -18,14 +18,12 @@ Cerrarsesion::Cerrarsesion(QWidget *parent, Player* User1, Player* User2)
     layout->addWidget(btn_user1);
     layout->addWidget(btn_user2);
 
-    connect(btn_user1, &QPushButton::clicked, this, [=]() mutable{
-        QMessageBox::information(this, "Cerrar Sesión", "La sesión de "+ User1->getNickName()+" se ha cerrado con éxito.");
-        User1 = nullptr;
+    connect(btn_user1, &QPushButton::clicked, this, [=](){
+        //emit usuario_logout(User1);
     });
     // 1) Dejar el puntero a null
-    connect(btn_user2, &QPushButton::clicked, this, [=]() mutable{
-        QMessageBox::information(this, "Cerrar Sesión", "La sesión de "+ User2->getNickName()+" se ha cerrado con éxito.");
-        User2 = nullptr;
+    connect(btn_user2, &QPushButton::clicked, this, [=](){
+         //emit usuario_logout(User2);
     });
 
 }

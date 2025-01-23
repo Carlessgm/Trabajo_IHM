@@ -13,5 +13,8 @@ class Cerrarsesion : public QDialog
 public:
     explicit Cerrarsesion(QWidget *parent = nullptr, Player* User1 = nullptr, Player* User2 = nullptr);
 
+signals:
+    //void usuario_logout(Player* user);
+
 };
 #endif // CERRARSESION_H

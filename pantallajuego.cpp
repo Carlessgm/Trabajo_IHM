@@ -66,13 +66,12 @@ PantallaJuego::PantallaJuego(QWidget *parent, Player* p)
             p2 = dlg.getLoggedPlayer();
             if (!p2) {
                 QMessageBox::warning(this, "Error", "No se pudo loguear el 2º jugador. Cerrando...");
-                close();
                 return;
             }
             if(p2->getNickName() == p1->getNickName()){
                 QMessageBox::warning(this, "Error", "No puedes jugar contra ti mismo");
-                close();
-                return;
+                p2 = nullptr;
+                playing = false;
             }
         } else {
 
@@ -106,7 +105,7 @@ void PantallaJuego::paintEvent(QPaintEvent *event)
     Q_UNUSED(event);
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
-
+    emit User2(p2);
     QRect geom = geometry();
     int width = geom.width();
     int height = geom.height();

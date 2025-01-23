@@ -22,7 +22,8 @@ public:
     //explicit PantallaJuego(Player* p1, Player* p2, QWidget *parent = nullptr);
 
     ~PantallaJuego();
-
+signals:
+    void User2(Player* user);
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
