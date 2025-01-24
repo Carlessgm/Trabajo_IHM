@@ -16,16 +16,6 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_persona">
-       <property name="text">
-        <string>Persona a elegir:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft</set>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_filtros">
        <property name="text">
@@ -50,9 +40,6 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="0" colspan="2">
-      <widget class="QComboBox" name="comboBox_personas"/>
-     </item>
      <item row="8" column="1">
       <widget class="QDateEdit" name="dateEdit_final"/>
      </item>
@@ -66,23 +53,13 @@
        </property>
        <property name="dateTime">
         <datetime>
-         <hour>21</hour>
+         <hour>20</hour>
          <minute>0</minute>
          <second>0</second>
          <year>2000</year>
          <month>1</month>
          <day>1</day>
         </datetime>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0" colspan="2">
-      <widget class="QComboBox" name="comboBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
        </property>
       </widget>
      </item>
@@ -98,18 +75,44 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-20</y>
-          <width>357</width>
-          <height>107</height>
+          <y>0</y>
+          <width>374</width>
+          <height>149</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout_3">
          <item row="0" column="0">
           <widget class="QTableView" name="tableView"/>
          </item>
+         <item row="1" column="0">
+          <layout class="QVBoxLayout" name="layout_aux"/>
+         </item>
         </layout>
        </widget>
       </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QComboBox" name="comboBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLabel" name="label_persona">
+       <property name="text">
+        <string>Persona a elegir:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft</set>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="comboBox_personas"/>
      </item>
     </layout>
    </item>

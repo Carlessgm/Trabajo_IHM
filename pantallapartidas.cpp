@@ -33,6 +33,8 @@ PantallaPartidas::PantallaPartidas(QWidget *parent)
     ui->comboBox->addItem("Todas las partidas");
     ui->comboBox->addItem("Partidas ganadas");
     ui->comboBox->addItem("Partidas perdidas");
+    ui->comboBox->addItem("Cantidad partidas");
+    ui->comboBox->addItem("Victoria/perdidas ratio");
 
     ui->comboBox_personas->addItem("Todos");
     QList<Player *> jugadores = Connect4::getInstance().getRanking();
@@ -52,7 +54,6 @@ PantallaPartidas::PantallaPartidas(QWidget *parent)
     // Cargar partidas con el filtro inicial
     aplicarFiltro();
 
-    crearGraficoBarras();
 }
 
 PantallaPartidas::~PantallaPartidas()
@@ -62,6 +63,7 @@ PantallaPartidas::~PantallaPartidas()
 
 void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fechaFinal, const int &tipo, const QString &persona)
 {
+
     QList<Partida*> partidas;
     // Obtener instancia de Connect4
     Connect4 *connect4 = nullptr;
@@ -78,6 +80,8 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
         return;
     }
     // Obtener todos los jugadores
+    QList<QString> jugadores_dist;
+
     if(persona == "Todos"){
         QList<QDateTime> tiempos;
         QList<Player*> jugadores = connect4->getRanking();
@@ -103,6 +107,7 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
                 if ((round->getTimestamp().date() < fechaInicial || round->getTimestamp().date() > fechaFinal) || tiempos.contains(round->getTimestamp())) {
                     continue;
                 }
+
                 tiempos.append(round->getTimestamp());
                 Player *winner = round->getWinner();
                 Player *loser = round->getLoser();
@@ -122,10 +127,13 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
 
             }
         }
+    //Un jugador en concreto
     }else{
+
         Player *jugador_sel = Connect4::getInstance().getPlayer(persona);
         QList<Round*> rounds;
         rounds = Connect4::getInstance().getRoundsForPlayer(jugador_sel);
+        jugadores_dist.append(jugador_sel->getNickName());
         for (Round* round : rounds) {
             if (!round) {
                 qWarning() << "Ronda nula encontrada. Saltando.";
@@ -133,6 +141,12 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
             }
             if (round->getTimestamp().date() < fechaInicial || round->getTimestamp().date() > fechaFinal) {
                 continue;
+            }
+            if(!jugadores_dist.contains(round->getLoser()->getNickName())){
+                jugadores_dist.append(round->getLoser()->getNickName());
+            }
+            if(!jugadores_dist.contains(round->getWinner()->getNickName())){
+                jugadores_dist.append(round->getWinner()->getNickName());
             }
             Player *winner = round->getWinner();
             Player *loser = round->getLoser();
@@ -153,6 +167,13 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
     }
     // Aplicar filtro
     QList<Partida*> partidasFiltradas;
+    int dia = ui->dateEdit_final->date().day() - ui->dateEdit_inicial->date().day();
+    int mes = ui->dateEdit_final->date().month() - ui->dateEdit_inicial->date().month();
+    int year = ui->dateEdit_final->date().year() - ui->dateEdit_inicial->date().year();
+    qDebug() << dia << " " << mes << " " << year;
+    QList<QString> fechas, fechas2;
+    int cant_ganadas = 0, cant_perdidas = 0, pers_dist = 0;
+    QList<int> ganadas, perdidas, personas_distintas;
     for (Partida* partida : partidas) {
         switch (tipo) {
         case 0:
@@ -168,13 +189,87 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
                 partidasFiltradas.append(partida);
             }
             break;
+        case 3:
+            break;
+        case 4:
+            qDebug() << partidas.count(partida);
+            if(mes < 1 && year < 1){
+                qDebug() << partida->fecha.chopped(8);
+                if(partida->ganador == persona || fechas.contains(partida->fecha.chopped(8))){
+                    qDebug() << "estoy";
+                    cant_ganadas++;
+                }else{
+                    qDebug() << fechas;
+                    ganadas.append(cant_ganadas);
+                    cant_ganadas = 0;
+                    fechas.append(partida->fecha.chopped(8));
+                }
+                if(partida->perdedor == persona || fechas2.contains(partida->fecha.chopped(8))){
+                    cant_perdidas++;
+                }else{
+                    perdidas.append(cant_perdidas);
+                    cant_perdidas = 0;
+                    fechas2.append(partida->fecha.chopped(8));
+                }
+            }
+
+            if(mes > 1 && year < 1){
+                if(partida->ganador == persona && fechas.contains(partida->fecha.chopped(8))){
+                    cant_ganadas++;
+                }else{
+                    ganadas.append(cant_ganadas);
+                    cant_ganadas = 0;
+                    fechas.append(partida->fecha.chopped(8));
+                }
+                if(partida->perdedor == persona && fechas2.contains(partida->fecha.chopped(8))){
+                    cant_perdidas++;
+                }else{
+                    perdidas.append(cant_perdidas);
+                    cant_perdidas = 0;
+                    fechas2.append(partida->fecha.chopped(8));
+                }
+            }
+            if(year > 1){
+                if(partida->ganador == persona && fechas.contains(partida->fecha.chopped(10))){
+                    cant_ganadas++;
+                }else{
+                    ganadas.append(cant_ganadas);
+                    cant_ganadas = 0;
+                    fechas.append(partida->fecha.chopped(10));
+                }
+                if(partida->perdedor == persona && fechas2.contains(partida->fecha.chopped(10))){
+                    cant_perdidas++;
+                }else{
+                    perdidas.append(cant_perdidas);
+                    cant_perdidas = 0;
+                    fechas2.append(partida->fecha.chopped(10));
+                }
+            }
+            qDebug() << ganadas;
+            break;
         default:
             break;
         }
 
     }
+    if(!ui->layout_aux->isEmpty()){
+        QLayoutItem *child;
+        while ((child = ui->layout_aux->takeAt(0)) != nullptr) {
+            if (child->widget()) {
+                child->widget()->deleteLater();
+            }
+            delete child;
+        }
+    }
     // Actualizar el modelo con las partidas filtradas
-    tableModel->setPartidas(partidasFiltradas);
+    if(tipo <= 2){
+        tableModel->setPartidas(partidasFiltradas);
+        ui->tableView->show();
+    }
+    if(tipo >= 3){
+        ui->tableView->hide();
+        crearGraficoBarras(ganadas, perdidas, pers_dist);
+    }
 }
 
 
@@ -191,37 +286,54 @@ void PantallaPartidas::aplicarFiltro()
     cargarPartidas(fechaInicial, fechaFinal, tipo, persona);
 }
 
-void PantallaPartidas::crearGraficoBarras()
+void PantallaPartidas::crearGraficoBarras(QList<int> cantidad_gan, QList<int> cantidad_per, int personas_dist)
 {
     // Crear un conjunto de datos de ejemplo
     QBarSet *setGanadas = new QBarSet("Ganadas");
     QBarSet *setPerdidas = new QBarSet("Perdidas");
 
-    // Añadir datos ficticios
-    *setGanadas << 5 << 7 << 3 << 4 << 6;
-    *setPerdidas << 2 << 3 << 4 << 5 << 1;
+    int dias = ui->dateEdit_final->date().day() - ui->dateEdit_inicial->date().day();
+    int meses = ui->dateEdit_final->date().month() - ui->dateEdit_inicial->date().month();
+    int year = ui->dateEdit_final->date().year() - ui->dateEdit_inicial->date().year();
+
+    // Añadir datos
+    for(int i = 0; i < cantidad_gan.length(); i++){
+        *setGanadas << cantidad_gan[i];
+    }
+    for(int i = 0; i < cantidad_gan.length(); i++){
+        *setPerdidas << cantidad_per[i];
+    }
 
     // Crear la serie de barras
-    QBarSeries *series = new QBarSeries();
+    QBarSeries *series_per = new QBarSeries();
+    QStackedBarSeries *series = new QStackedBarSeries();
     series->append(setGanadas);
     series->append(setPerdidas);
 
     // Crear el gráfico
     QChart *chart = new QChart();
     chart->addSeries(series);
-    chart->setTitle("Estadísticas de Partidas");
+    chart->setTitle("Cantidad de ganadas resepecto perdidas");
     chart->setAnimationOptions(QChart::SeriesAnimations);
 
     // Añadir categorías en el eje X
-    QStringList categories {"Jugador1", "Jugador2", "Jugador3", "Jugador4", "Jugador5"};
-    QBarCategoryAxis *axisX = new QBarCategoryAxis();
-    axisX->append(categories);
+    QValueAxis *axisX = new QValueAxis();
+    if(meses < 1){
+        axisX->setRange(ui->dateEdit_inicial->date().day(), ui->dateEdit_final->date().day());
+    }
+    if(meses > 1 && year < 1){
+        axisX->setRange(ui->dateEdit_inicial->date().month(),ui->dateEdit_final->date().month());
+    }
+    if(year > 1){
+        axisX->setRange(ui->dateEdit_inicial->date().year(), ui->dateEdit_final->date().year());
+    }
+
     chart->addAxis(axisX, Qt::AlignBottom);
     series->attachAxis(axisX);
 
     // Configurar el eje Y
     QValueAxis *axisY = new QValueAxis();
-    axisY->setRange(0, 10);
+    axisY->setRange(0, 20);
     chart->addAxis(axisY, Qt::AlignLeft);
     series->attachAxis(axisY);
 
@@ -230,5 +342,6 @@ void PantallaPartidas::crearGraficoBarras()
     chartView->setRenderHint(QPainter::Antialiasing);
 
     // Agregar el gráfico al layout de la interfaz
-    ui->scrollAreaWidgetContents->layout()->addWidget(chartView);
+    //ui->scrollAreaWidgetContents->setLayout(ui->layout_aux);
+    ui->layout_aux->addWidget(chartView);
 }
