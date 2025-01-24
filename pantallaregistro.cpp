@@ -136,16 +136,6 @@ void PantallaRegistro::validarEmail()
     QString correo = ui->lineEditCorreo->text();
     QString confirmarCorreo = ui->lineEditConfirmarCorreo->text();
 
-    // Validar que las contraseñas coinciden
-    if (correo != confirmarCorreo && (confirmarCorreo != "")) {
-        ui->lineEditConfirmarCorreo->setProperty("Valido", false);
-        qDebug() << ui->lineEditConfirmarCorreo->property("Valido") << "emails distintas";
-
-    }else{
-
-        ui->lineEditConfirmarCorreo->setProperty("Valido", true);
-        qDebug() << ui->lineEditConfirmarCorreo->property("Valido") << "emails iguales";
-    }
 
     static QRegularExpression emailRegex("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
     if(!emailRegex.match(correo).hasMatch())
@@ -156,6 +146,17 @@ void PantallaRegistro::validarEmail()
 
         ui->lineEditCorreo->setProperty("Valido", true);
         qDebug() << ui->lineEditCorreo->property("Valido") << "email correcta";
+    }
+
+    // Validar que las contraseñas coinciden
+    if (correo == confirmarCorreo && (confirmarCorreo != "")) {
+        ui->lineEditConfirmarCorreo->setProperty("Valido", true);
+        qDebug() << ui->lineEditConfirmarCorreo->property("Valido") << "emails iguales";
+
+    }else{
+
+        ui->lineEditConfirmarCorreo->setProperty("Valido", false);
+        qDebug() << ui->lineEditConfirmarCorreo->property("Valido") << "emails distintos";
     }
     setStyleSheet(valido_estilo);
 
@@ -180,14 +181,13 @@ void PantallaRegistro::validarContrasenas()
     }
 
     // Validar que las contraseñas coinciden
-    if (contrasena != confirmarContrasena && (confirmarContrasena != "")) {
-        ui->lineEditConfirmarContrasena->setProperty("Valido", false);
-        qDebug() << ui->lineEditContrasena->property("Valido") << "Contraseñas distintas";
-    }
-    else{
-
+    if (contrasena == confirmarContrasena && (confirmarContrasena != "")) {
         ui->lineEditConfirmarContrasena->setProperty("Valido", true);
         qDebug() << ui->lineEditContrasena->property("Valido") << "Contraseñas iguales";
+    }
+    else{
+        ui->lineEditConfirmarContrasena->setProperty("Valido", false);
+        qDebug() << ui->lineEditContrasena->property("Valido") << "Contraseñas distintas";
     }
     setStyleSheet(valido_estilo);
     // Validar que la contraseña cumpla con los requisitos

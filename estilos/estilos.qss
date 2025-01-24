@@ -3,7 +3,7 @@ QMainWindow {
     background-color: #2f7cc0; /* Azul de la iamgen para el fondo */
 }
 PantallaRegistro{
-    background-color: #ffffff; /* Gris muy claro para el fondo */
+    background-color: #f0f0f0; /* Gris muy claro para el fondo */
 }
 
 
@@ -37,7 +37,7 @@ QPushButton {
     padding: 6px 12px;
     font-size: 16px;
     font-family: Arial, sans-serif;
-    color: #999999;
+    color: #cccccc;
 
 }
 QRadioButton::indicator {
@@ -46,11 +46,11 @@ QRadioButton::indicator {
 }
 
 QRadioButton::indicator::unchecked {
-    image: url(:/imagenes/ojo_abierto.png);
+    image: url(:/imagenes/ojo_cerrado.png);
 }
 
 QRadioButton::indicator::checked {
-    image: url(:/imagenes/ojo_cerrado.png);
+    image: url(:/imagenes/ojo_abierto.png);
 }
 
 
@@ -65,9 +65,41 @@ QMessageBox{
     background-color: #d4d4d4;
 }
 
+/* Estilo general de la toolbar */
+QToolBar {
+    background-color: #2a6daa;
+    border: none; /* Sin bordes */
+}
+
+/* Botones habilitados en la toolbar */
 QToolButton {
+    color: #ffffff; /* Texto blanco */
+    background-color: transparent; /* Fondo transparente */
     border: none; /* Sin bordes */
     padding: 4px 8px; /* Ajusta el tamaño del botón */
+}
+
+/* Botones deshabilitados en la toolbar */
+QToolButton:disabled {
+    color: #808080;
+}
+
+/* Botones habilitados al pasar el ratón */
+QToolButton:hover {
+    background-color: #666666;
+    color: #ffffff; /* Texto blanco */
+}
+
+/* Botones habilitados al ser presionados */
+QToolButton:pressed {
+    background-color: #555555;
+}
+
+/* Menús desplegables de la toolbar */
+QMenu {
+    background-color: #444444;
+    color: #ffffff;
+    border: 1px solid #666666;
 }
 
 QToolButton:hover{
@@ -78,4 +110,12 @@ QToolButton:hover{
 QToolButton#darkModeAction {
     qproperty-icon: url(:/imagenes/moon.png); /* Ícono de luna para modo claro */
     border: none;
+}
+
+QPushButton#botonOlvideContrasena {
+    background-color: transparent;
+    border: none;
+    font-size: 12px; /* Ajusta el tamaño de la fuente si es necesario */
+    padding-top: 0px; /* Empuja el texto hacia la parte superior */
+    padding-bottom: 10px; /* Ajusta para no recortar el texto */
 }

@@ -7,7 +7,7 @@ QMainWindow {
 
 /* Si quieres que PantallaRegistro u otras pantallas tengan fondo oscuro */
 PantallaRegistro {
-    background-color: #222222;
+    background-color: #333333;
 }
 
 QLineEdit[Valido = 'false'] {
@@ -18,6 +18,10 @@ QLineEdit[Valido = 'false'] {
 QLineEdit[Valido = 'true'] {
     border-color: #80c080; /* Verde suave */
     background-color: #e6ffe6; /* Fondo verde claro */
+}
+
+QLabel[aux = 'true']{
+    font-size: 12px;
 }
 
 /* Etiquetas en color claro */
@@ -54,11 +58,11 @@ QRadioButton::indicator {
 }
 
 QRadioButton::indicator::unchecked {
-    image: url(:/imagenes/ojo_abierto.png);
+    image: url(:/imagenes/ojo_cerrado.png);
 }
 
 QRadioButton::indicator::checked {
-    image: url(:/imagenes/ojo_cerrado.png);
+    image: url(:/imagenes/ojo_abierto.png);
 }
 
 /* Estilo general de la toolbar */
@@ -101,4 +105,12 @@ QMenu {
 QToolButton#darkModeAction {
     qproperty-icon: url(:/imagenes/moon.png); /* Ícono de luna para modo claro */
     border: none;
+}
+
+QPushButton#botonOlvideContrasena {
+    background-color: transparent;
+    border: none;
+    font-size: 12px; /* Ajusta el tamaño de la fuente si es necesario */
+    padding-top: 0px; /* Empuja el texto hacia la parte superior */
+    padding-bottom: 10px; /* Ajusta para no recortar el texto */
 }

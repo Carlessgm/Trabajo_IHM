@@ -86,6 +86,14 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>lineUsuario</tabstop>
+  <tabstop>lineContrasena</tabstop>
+  <tabstop>radioButton</tabstop>
+  <tabstop>botonIniciarSesion</tabstop>
+  <tabstop>botonRegistrar</tabstop>
+  <tabstop>botonOlvideContrasena</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

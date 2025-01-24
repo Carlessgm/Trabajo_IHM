@@ -55,7 +55,7 @@ void PantallaPerfil::on_btnGuardar_clicked()
         }
         if (!validarContrasena(pass)) {
             QMessageBox::warning(this, "Error",
-                                 "La contraseña no cumple los requisitos (8-20, etc.).");
+                                 "La contraseña no cumple los requisitos.");
             return;
         }
     }

@@ -18,9 +18,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     // Crear acciones para la barra de herramientas
-    QAction *loginAction = new QAction("Mostrar Pantalla Inicio", this);
-    QAction *gameAction = new QAction("Mostrar Pantalla Juego", this);
-    QAction *rankingAction = new QAction("Mostrar Ranking", this);
+    QAction *loginAction = new QAction("Iniciar Sesión", this);
+    QAction *gameAction = new QAction("Jugar Partida", this);
+    QAction *rankingAction = new QAction("Ranking", this);
     QAction *partidasAction = new QAction("Partidas Jugadas", this);
     QAction *editProfileAction = new QAction("Editar Perfil", this);
     QAction *logoutAction = new QAction("Cerrar Sesión", this);
@@ -29,15 +29,20 @@ MainWindow::MainWindow(QWidget *parent)
 
     // *** NUEVA ACCIÓN *** para 2 jugadores:
     //QAction *twoPlayersAction = new QAction("Jugar vs. 2º Jugador", this);
-    // Agregar acciones a la barra de herramientas
+    // Agregar las acciones a la barra de herramientas con espacios
+    QWidget *leftSpacer = new QWidget(this);
+    leftSpacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    ui->toolBar->addWidget(leftSpacer);
     ui->toolBar->addAction(loginAction);
     ui->toolBar->addAction(gameAction);
     ui->toolBar->addAction(rankingAction);
     ui->toolBar->addAction(partidasAction);
     ui->toolBar->addAction(editProfileAction);
-    ui->toolBar->addAction(darkModeAction);
     ui->toolBar->addAction(logoutAction);
-
+    ui->toolBar->addAction(darkModeAction);
+    QWidget *rightSpacer = new QWidget(this);
+    rightSpacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    ui->toolBar->addWidget(rightSpacer);
 
     // Asignamos al boton de cambio modo el nombre darkModeAction para poder cambiar su icono posteriormente
     darkModeAction->setObjectName("darkModeAction");
@@ -254,14 +259,13 @@ void MainWindow::logout()
         int jugador_sel = QMessageBox::question(this,"losgout","Usuario a deslogear", currentUser->getNickName(), User2->getNickName());
         qDebug() << jugador_sel;
         if(jugador_sel == 1){
-            QMessageBox::information(this, "Logout", "El jugador "+User2->getNickName()+ "se ha deslogueado correctamente");
+            QMessageBox::information(this, "Logout", "El jugador "+User2->getNickName()+ " se ha deslogueado correctamente");
             User2 = nullptr;
 
         }
         if(jugador_sel == 0){
-            QMessageBox::information(this, "Logout", "El jugador "+currentUser->getNickName()+ "se ha deslogueado correctamente");
+            QMessageBox::information(this, "Logout", "El jugador "+currentUser->getNickName()+ " se ha deslogueado correctamente");
             currentUser = User2;
-
         }
     }
 

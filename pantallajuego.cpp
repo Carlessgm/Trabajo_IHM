@@ -77,7 +77,6 @@ PantallaJuego::PantallaJuego(QWidget *parent, Player* p)
 
             //close();
             playing = false;
-            QMessageBox::information(this,"Contrincante", "Elija contra quien jugar");
         }
     }
 

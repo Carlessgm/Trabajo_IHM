@@ -247,6 +247,10 @@
  </widget>
  <tabstops>
   <tabstop>lineEditUsuario</tabstop>
+  <tabstop>lineEditContrasena</tabstop>
+  <tabstop>vercontrasena</tabstop>
+  <tabstop>lineEditConfirmarContrasena</tabstop>
+  <tabstop>ver_contrasenarep</tabstop>
   <tabstop>lineEditCorreo</tabstop>
   <tabstop>lineEditConfirmarCorreo</tabstop>
   <tabstop>dateEditNacimiento</tabstop>

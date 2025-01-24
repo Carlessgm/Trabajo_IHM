@@ -156,6 +156,15 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>lineEmail</tabstop>
+  <tabstop>linePassword</tabstop>
+  <tabstop>linePasswordConfirm</tabstop>
+  <tabstop>dateEditBirth</tabstop>
+  <tabstop>btnChangeAvatar</tabstop>
+  <tabstop>btnCancelar</tabstop>
+  <tabstop>btnGuardar</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
