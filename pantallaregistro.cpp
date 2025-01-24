@@ -20,6 +20,7 @@ PantallaRegistro::PantallaRegistro(QWidget *parent) :
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &PantallaRegistro::reject);
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &PantallaRegistro::okButtonClicked);
     ui->label->setProperty("aux", true);
+    ui->label_2->setProperty("aux", true);
 
     connect(ui->lineEditUsuario, &QLineEdit::editingFinished, this, &PantallaRegistro::validarNombreUsuario);
     connect(ui->lineEditContrasena, &QLineEdit::editingFinished, this, &PantallaRegistro::validarContrasenas);

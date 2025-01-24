@@ -121,3 +121,24 @@ QPushButton#botonOlvideContrasena {
     padding-top: 0px; /* Empuja el texto hacia la parte superior */
     padding-bottom: 10px; /* Ajusta para no recortar el texto */
 }
+
+QPushButton#botonSeleccionarAvatar {
+    background-color: transparent;
+    border: none;
+    font-size: 13px; /* Ajusta el tamaño del texto */
+    color: #2f2f2f; /* Gris oscuro para buen contraste con fondo claro */
+    padding-top: 0px;
+    padding-bottom: 10px;
+    padding-left: 0px; /* Alinea a la izquierda */
+    text-align: left; /* Asegura alineación del texto */
+    text-decoration: underline; /* Subrayado del texto */
+    font-family: Arial, sans-serif; /* Mismo tipo de letra */
+    font-weight: bold; /* Texto en negrita */
+}
+
+/* Cambiar color cuando el mouse pase por encima */
+QPushButton#botonSeleccionarAvatar:hover {
+    color: #555555; /* Gris medio para resaltar */
+    text-decoration: underline; /* Mantiene subrayado */
+    cursor: pointer; /* Cambia el cursor a mano */
+}
