@@ -13,11 +13,13 @@ PantallaRegistro {
 QLineEdit[Valido = 'false'] {
     border-color: #ff8080; /* Rojo suave */
     background-color: #ffe6e6; /* Fondo rojo claro */
+    color: #ff0000; /* Texto en rojo */
 }
 
 QLineEdit[Valido = 'true'] {
     border-color: #80c080; /* Verde suave */
     background-color: #e6ffe6; /* Fondo verde claro */
+    color: #008000; /* Texto en verde */
 }
 
 QLabel[aux = 'true']{
