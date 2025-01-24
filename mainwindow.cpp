@@ -94,9 +94,9 @@ void MainWindow::showPantallaInicio()
         currentUser = user;
 
         // Habilitar "Mostrar Pantalla Juego"
-        ui->toolBar->actions()[1]->setEnabled(true);
+        ui->toolBar->actions()[2]->setEnabled(true);
         // Habilitar "Jugar vs. 2º Jugador" (está en la posición 4 del toolbar, index 4)
-        ui->toolBar->actions()[4]->setEnabled(true);
+        ui->toolBar->actions()[5]->setEnabled(true);
         ui->toolBar->actions()[6]->setEnabled(true);
 
         // Cambiar a la pantalla de juego de 1 jugador por defecto
@@ -273,8 +273,8 @@ void MainWindow::logout()
     else{
         QMessageBox::information(this, "Logout", "El jugador "+currentUser->getNickName()+ "se ha deslogueado correctamente");
         currentUser = nullptr;
-        ui->toolBar->actions()[1]->setEnabled(false); // "Mostrar Pantalla Juego"
-        ui->toolBar->actions()[4]->setEnabled(false); // "Editar Perfil" (ajusta si cambia el orden)
+        ui->toolBar->actions()[2]->setEnabled(false); // "Mostrar Pantalla Juego"
+        ui->toolBar->actions()[5]->setEnabled(false); // "Editar Perfil" (ajusta si cambia el orden)
         ui->toolBar->actions()[6]->setEnabled(false); // "Cerrar sesión"
 
     }
