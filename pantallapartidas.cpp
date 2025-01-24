@@ -34,7 +34,7 @@ PantallaPartidas::PantallaPartidas(QWidget *parent)
     ui->comboBox->addItem("Partidas ganadas");
     ui->comboBox->addItem("Partidas perdidas");
     ui->comboBox->addItem("Cantidad partidas");
-    ui->comboBox->addItem("Victoria/perdidas ratio");
+    ui->comboBox->addItem("Victorias/derrotas");
 
     ui->comboBox_personas->addItem("Todos");
     QList<Player *> jugadores = Connect4::getInstance().getRanking();
@@ -48,7 +48,7 @@ PantallaPartidas::PantallaPartidas(QWidget *parent)
     connect(ui->comboBox_personas, &QComboBox::currentTextChanged, this, &PantallaPartidas::aplicarFiltro);
 
     // Inicializar las fechas con valores predeterminados
-    ui->dateEdit_inicial->setDate(QDate(2000, 1, 1));
+    ui->dateEdit_inicial->setDate(QDate(2025, 1, 1));
     ui->dateEdit_final->setDate(QDate::currentDate());
 
     // Cargar partidas con el filtro inicial
@@ -198,6 +198,115 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
             }
             break;
         case 3:
+            if(mes < 1 && year < 1){
+                QPair<int, int> aux_pair;
+                int dia_ant = 0;
+                for(Partida* partida :partidas){
+                    QString aux = partida->fecha.remove(0,8);
+                    int dia_ini = aux.chopped(9).toInt();
+                    if(partidas.first() == partida){
+                        dia_ant = dia_ini;
+                    }
+
+                    if(dia_ini != dia_ant){
+
+                        aux_pair.first = dia_ant;
+                        aux_pair.second = cant_ganadas;
+                        ganadas.append(aux_pair);
+                        aux_pair.second = cant_perdidas;
+                        perdidas.append(aux_pair);
+                        cant_ganadas = 0;
+                        cant_perdidas = 0;
+                        aux_pair.first = dia_ini;
+                    }
+                    if(partida->ganador == persona){
+                        cant_ganadas++;
+                    }
+                    if(partida->perdedor == persona){
+                        cant_perdidas++;
+                    }
+                    dia_ant = dia_ini;
+                }
+                aux_pair.second = (cant_ganadas);
+                ganadas.append(aux_pair);
+                aux_pair.second = (cant_perdidas);
+                perdidas.append(aux_pair);
+            }
+
+
+            if(mes > 1 && year < 1){
+                QPair<int, int> aux_pair;
+                int dia_ant = 0;
+                for(Partida* partida :partidas){
+                    QString aux = partida->fecha.remove(0,5);
+                    int dia_ini = aux.chopped(12).toInt();
+                    if(partidas.first() == partida){
+                        dia_ant = dia_ini;
+                    }
+
+                    if(dia_ini != dia_ant){
+
+                        aux_pair.first = dia_ant;
+                        aux_pair.second = cant_ganadas;
+                        ganadas.append(aux_pair);
+                        aux_pair.second = cant_perdidas;
+                        perdidas.append(aux_pair);
+                        cant_ganadas = 0;
+                        cant_perdidas = 0;
+                        aux_pair.first = dia_ini;
+                    }
+                    if(partida->ganador == persona){
+                        cant_ganadas++;
+                    }
+                    if(partida->perdedor == persona){
+                        cant_perdidas++;
+                    }
+                    dia_ant = dia_ini;
+                }
+                aux_pair.second = (cant_ganadas);
+                ganadas.append(aux_pair);
+                aux_pair.second = (cant_perdidas);
+                perdidas.append(aux_pair);
+            }
+
+            if(year > 1){
+
+                QPair<int, int> aux_pair;
+                int dia_ant = 0;
+                for(Partida* partida :partidas){
+                    QString aux = partida->fecha;
+                    int dia_ini = aux.chopped(15).toInt();
+                    if(partidas.first() == partida){
+                        dia_ant = dia_ini;
+                        aux_pair.first = dia_ant;
+                    }
+
+                    if(dia_ini != dia_ant){
+
+                        aux_pair.first = dia_ant;
+                        aux_pair.second = cant_ganadas;
+                        ganadas.append(aux_pair);
+                        aux_pair.second = cant_perdidas;
+                        perdidas.append(aux_pair);
+                        cant_ganadas = 0;
+                        cant_perdidas = 0;
+                        aux_pair.first = dia_ini;
+                    }
+                    if(partida->ganador == persona){
+                        cant_ganadas++;
+                    }
+                    if(partida->perdedor == persona){
+                        cant_perdidas++;
+                    }
+                    dia_ant = dia_ini;
+                }
+                aux_pair.second = (cant_ganadas);
+                ganadas.append(aux_pair);
+                aux_pair.second = (cant_perdidas);
+                perdidas.append(aux_pair);
+            }
+
+
             break;
         case 4:
 
@@ -210,7 +319,7 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
                     if(partidas.first() == partida){
                         dia_ant = dia_ini;
                     }
-                    qDebug() << dia_ini << " " << dia_ant;
+
                     if(dia_ini != dia_ant){
 
                         aux_pair.first = dia_ant;
@@ -246,7 +355,7 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
                         if(partidas.first() == partida){
                             dia_ant = dia_ini;
                         }
-                        qDebug() << dia_ini << " " << dia_ant;
+
                         if(dia_ini != dia_ant){
 
                             aux_pair.first = dia_ant;
@@ -283,7 +392,6 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
                         dia_ant = dia_ini;
                         aux_pair.first = dia_ant;
                     }
-                    qDebug() << dia_ini << " " << dia_ant;
                     if(dia_ini != dia_ant){
 
                         aux_pair.first = dia_ant;
@@ -309,8 +417,6 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
                 perdidas.append(aux_pair);
             }
 
-            qDebug() << ganadas;
-            qDebug() << perdidas;
             break;
         default:
             break;
@@ -335,7 +441,8 @@ void PantallaPartidas::cargarPartidas(const QDate &fechaInicial, const QDate &fe
         crearGraficoBarras(ganadas, perdidas, pers_dist);
     }
     if(tipo == 3){
-
+        ui->tableView->hide();
+        crearGraficoLineas(ganadas, perdidas, pers_dist);
     }
 }
 
@@ -352,6 +459,7 @@ void PantallaPartidas::aplicarFiltro()
 
     cargarPartidas(fechaInicial, fechaFinal, tipo, persona);
 }
+
 
 void PantallaPartidas::crearGraficoBarras(QList<QPair<int, int>> cantidad_gan, QList<QPair<int, int>> cantidad_per, int personas_dist)
 {
@@ -387,7 +495,7 @@ void PantallaPartidas::crearGraficoBarras(QList<QPair<int, int>> cantidad_gan, Q
             }
         }
     }
-    if(meses > 1 && year < 1){
+    if(meses >= 1 && year < 1){
         for(int i = 1; i <= ui->dateEdit_final->date().month(); i++){
             if(!aux_cantidad_gan.empty()){
                 if(aux_cantidad_gan.first().first == i){
@@ -410,7 +518,7 @@ void PantallaPartidas::crearGraficoBarras(QList<QPair<int, int>> cantidad_gan, Q
 
         }
     }
-    if(year > 1){
+    if(year >= 1){
         for(int i = 1; i <= ui->dateEdit_final->date().year(); i++){
             if(!aux_cantidad_gan.empty()){
                 if(aux_cantidad_gan.first().first == i){
@@ -450,10 +558,10 @@ void PantallaPartidas::crearGraficoBarras(QList<QPair<int, int>> cantidad_gan, Q
     if(meses < 1){
         axisX->setRange(ui->dateEdit_inicial->date().day(), ui->dateEdit_final->date().day());
     }
-    if(meses > 1 && year < 1){
+    if(meses >= 1 && year < 1){
         axisX->setRange(ui->dateEdit_inicial->date().month(),ui->dateEdit_final->date().month());
     }
-    if(year > 1){
+    if(year >= 1){
         axisX->setRange(ui->dateEdit_inicial->date().year(), ui->dateEdit_final->date().year());
     }
 
@@ -473,4 +581,127 @@ void PantallaPartidas::crearGraficoBarras(QList<QPair<int, int>> cantidad_gan, Q
     // Agregar el gráfico al layout de la interfaz
 
     ui->layout_aux->addWidget(chartView);
+}
+
+void PantallaPartidas::crearGraficoLineas(QList<QPair<int, int>> cantidad_gan, QList<QPair<int, int>> cantidad_per, int personas_dist)
+{
+    // Crear un conjunto de datos de ejemplo
+    QBarSet *setGanadas = new QBarSet("Ganadas");
+    QBarSet *setPerdidas = new QBarSet("Perdidas");
+
+    QList<QPair<int, int>> aux_cantidad_gan = cantidad_gan;
+    int dias = ui->dateEdit_final->date().day() - ui->dateEdit_inicial->date().day();
+    int meses = ui->dateEdit_final->date().month() - ui->dateEdit_inicial->date().month();
+    int year = ui->dateEdit_final->date().year() - ui->dateEdit_inicial->date().year();
+
+    // Añadir datos
+    if(meses < 1){
+        for(int i = 1; i <= ui->dateEdit_final->date().day(); i++){
+            if(!aux_cantidad_gan.empty()){
+                if(aux_cantidad_gan.first().first == i){
+                    *setGanadas << aux_cantidad_gan.first().second;
+                    aux_cantidad_gan.pop_front();
+                }else{
+                    *setGanadas << 0;
+                }
+            }
+        }
+        for(int i = 1; i <= ui->dateEdit_final->date().day(); i++){
+            if(!cantidad_per.empty()){
+                if(cantidad_per.first().first == i){
+                    *setPerdidas << cantidad_per.first().second;
+                    cantidad_per.pop_front();
+                }else{
+                    *setPerdidas << 0;
+                }
+            }
+        }
+    }
+    if(meses >= 1 && year < 1){
+        for(int i = 1; i <= ui->dateEdit_final->date().month(); i++){
+            if(!aux_cantidad_gan.empty()){
+                if(aux_cantidad_gan.first().first == i){
+                    *setGanadas << aux_cantidad_gan.first().second;
+                    aux_cantidad_gan.pop_front();
+                }else{
+                    *setGanadas << 0;
+                }
+            }
+        }
+        for(int i = 1; i <= ui->dateEdit_final->date().month(); i++){
+            if(!cantidad_per.empty()){
+                if(cantidad_per.first().first == i){
+                    *setPerdidas << cantidad_per.first().second;
+                    cantidad_per.pop_front();
+                }else{
+                    *setPerdidas << 0;
+                }
+            }
+
+        }
+    }
+    if(year >= 1){
+        for(int i = 1; i <= ui->dateEdit_final->date().year(); i++){
+            if(!aux_cantidad_gan.empty()){
+                if(aux_cantidad_gan.first().first == i){
+                    *setGanadas << aux_cantidad_gan.first().second;
+                    aux_cantidad_gan.pop_front();
+                }else{
+                    *setGanadas << 0;
+                }
+            }
+        }
+        for(int i = 1; i <= ui->dateEdit_final->date().year(); i++){
+            if(!cantidad_per.empty()){
+                if(cantidad_per.first().first == i){
+                    *setPerdidas << cantidad_per.first().second;
+                    cantidad_per.pop_front();
+                }else{
+                    *setPerdidas << 0;
+                }
+            }
+        }
+    }
+
+    // Crear la serie de barras
+    QBarSeries *series_per = new QBarSeries();
+    QStackedBarSeries *series = new QStackedBarSeries();
+    series->append(setGanadas);
+    series->append(setPerdidas);
+
+    // Crear el gráfico
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle("Cantidad de ganadas resepecto perdidas");
+    chart->setAnimationOptions(QChart::SeriesAnimations);
+
+    // Añadir categorías en el eje X
+    QValueAxis *axisX = new QValueAxis();
+    if(meses < 1){
+        axisX->setRange(ui->dateEdit_inicial->date().day(), ui->dateEdit_final->date().day());
+    }
+    if(meses >= 1 && year < 1){
+        axisX->setRange(ui->dateEdit_inicial->date().month(),ui->dateEdit_final->date().month());
+    }
+    if(year >= 1){
+        axisX->setRange(ui->dateEdit_inicial->date().year(), ui->dateEdit_final->date().year());
+    }
+
+    chart->addAxis(axisX, Qt::AlignBottom);
+    series->attachAxis(axisX);
+
+    // Configurar el eje Y
+    QValueAxis *axisY = new QValueAxis();
+    axisY->setRange(0, 20);
+    chart->addAxis(axisY, Qt::AlignLeft);
+    series->attachAxis(axisY);
+
+    // Crear la vista del gráfico
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+
+    // Agregar el gráfico al layout de la interfaz
+
+    ui->layout_aux->addWidget(chartView);
+
 }

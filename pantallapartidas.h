@@ -25,6 +25,7 @@ private:
     void cargarPartidas(const QDate &fechaInicial, const QDate &fechaFinal, const int &tipo, const QString &persona); // Carga las partidas según el rango de fechas
     void aplicarFiltro(); // Aplica el filtro según las fechas seleccionadas
     void crearGraficoBarras(QList<QPair<int, int>> ganadas, QList<QPair<int,int>> perdidas, int personas_dist); //Genera los gráficos de barras de las partidas
+    void crearGraficoLineas(QList<QPair<int, int>> cantidad_gan, QList<QPair<int, int>> cantidad_per, int personas_dist); //Genera los gráficos de lineas de las partidas
 
 };
 
